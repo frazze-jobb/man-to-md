@@ -1,16 +1,16 @@
-# pcre2pattern(3) - Perl-compatible regular expressions (revised API)
+## pcre2pattern(3) - Perl-compatible regular expressions (revised API)
 
 PCRE2 10.45, 21 Sepbember 2024
 
 
 <a name="pcre2-regular-expression-details"></a>
 
-# Pcre2 Regular Expression Details
+## Pcre2 Regular Expression Details
 
 
 The syntax and semantics of the regular expressions that are supported by PCRE2
 are described in detail below. There is a quick-reference syntax summary in the
-**pcre2syntax**
+`pcre2syntax`
 page. PCRE2 tries to match Perl syntax and semantics as closely as it can.
 PCRE2 also supports some alternative regular expression syntax (which does not
 conflict with the Perl syntax) in order to provide some compatibility with
@@ -23,21 +23,21 @@ by O'Reilly, covers regular expressions in great detail. This description of
 PCRE2's regular expressions is intended as reference material.
 
 This document discusses the regular expression patterns that are supported by
-PCRE2 when its main matching function, **pcre2\_match()**, is used. PCRE2 also
-has an alternative matching function, **pcre2\_dfa\_match()**, which matches
+PCRE2 when its main matching function, `pcre2\_match()`, is used. PCRE2 also
+has an alternative matching function, `pcre2\_dfa\_match()`, which matches
 using a different algorithm that is not Perl-compatible. Some of the features
 discussed below are not available when DFA matching is used. The advantages and
 disadvantages of the alternative function, and how it differs from the normal
 function, are discussed in the
-**pcre2matching**
+`pcre2matching`
 page.
 
 <a name="special-start-of-pattern-items"></a>
 
-# Special Start-of-Pattern Items
+## Special Start-of-Pattern Items
 
 
-A number of options that can be passed to **pcre2\_compile()** can also be set
+A number of options that can be passed to `pcre2\_compile()` can also be set
 by special items at the start of a pattern. These are not Perl-compatible, but
 are provided to make these options accessible to pattern writers who are not
 able to change the program that processes the pattern. Any number of these
@@ -46,7 +46,7 @@ pattern string, and the letters must be in upper case.
 
 <a name="utf-support"></a>
 
-### UTF support
+_UTF support_
 
 
 In the 8-bit and 16-bit PCRE2 libraries, characters may be coded either as
@@ -59,17 +59,17 @@ or PCRE2_MATCH_INVALID_UTF options, or the pattern must start with the special
 sequence (*UTF), which is equivalent to setting the relevant PCRE2_UTF. How
 setting a UTF mode affects pattern matching is mentioned in several places
 below. There is also a summary of features in the
-**pcre2unicode**
+`pcre2unicode`
 page.
 
 Some applications that allow their users to supply patterns may wish to
 restrict them to non-UTF data for security reasons. If the PCRE2_NEVER_UTF
-option is passed to **pcre2\_compile()**, (*UTF) is not allowed, and its
+option is passed to `pcre2\_compile()`, (*UTF) is not allowed, and its
 appearance in a pattern causes an error.
 
 <a name="unicode-property-support"></a>
 
-### Unicode property support
+_Unicode property support_
 
 
 Another special sequence that may appear at the start of a pattern is (*UCP).
@@ -84,12 +84,12 @@ below.
 
 Some applications that allow their users to supply patterns may wish to
 restrict them for security reasons. If the PCRE2_NEVER_UCP option is passed to
-**pcre2\_compile()**, (*UCP) is not allowed, and its appearance in a pattern
+`pcre2\_compile()`, (*UCP) is not allowed, and its appearance in a pattern
 causes an error.
 
 <a name="locking-out-empty-string-matching"></a>
 
-### Locking out empty string matching
+_Locking out empty string matching_
 
 
 Starting a pattern with (*NOTEMPTY) or (*NOTEMPTY_ATSTART) has the same effect
@@ -100,58 +100,58 @@ of the subject.
 
 <a name="disabling-auto-possessification"></a>
 
-### Disabling auto-possessification
+_Disabling auto-possessification_
 
 
 If a pattern starts with (*NO_AUTO_POSSESS), it has the same effect as setting
-the PCRE2_NO_AUTO_POSSESS option, or calling **pcre2\_set\_optimize()** with
+the PCRE2_NO_AUTO_POSSESS option, or calling `pcre2\_set\_optimize()` with
 a PCRE2_AUTO_POSSESS_OFF directive. This stops PCRE2 from making quantifiers
 possessive when what follows cannot match the repeated item. For example, by
 default a+b is treated as a++b. For more details, see the
-**pcre2api**
+`pcre2api`
 documentation.
 
 <a name="disabling-start-up-optimizations"></a>
 
-### Disabling start-up optimizations
+_Disabling start-up optimizations_
 
 
 If a pattern starts with (*NO_START_OPT), it has the same effect as setting the
-PCRE2_NO_START_OPTIMIZE option, or calling **pcre2\_set\_optimize()** with
+PCRE2_NO_START_OPTIMIZE option, or calling `pcre2\_set\_optimize()` with
 a PCRE2_START_OPTIMIZE_OFF directive. This disables several optimizations for
 quickly reaching "no match" results. For more details, see the
-**pcre2api**
+`pcre2api`
 documentation.
 
 <a name="disabling-automatic-anchoring"></a>
 
-### Disabling automatic anchoring
+_Disabling automatic anchoring_
 
 
 If a pattern starts with (*NO_DOTSTAR_ANCHOR), it has the same effect as
-setting the PCRE2_NO_DOTSTAR_ANCHOR option, or calling **pcre2\_set\_optimize()**
+setting the PCRE2_NO_DOTSTAR_ANCHOR option, or calling `pcre2\_set\_optimize()`
 with a PCRE2_DOTSTAR_ANCHOR_OFF directive. This disables optimizations that
 apply to patterns whose top-level branches all start with .* (match any number
 of arbitrary characters). For more details, see the
-**pcre2api**
+`pcre2api`
 documentation.
 
 <a name="disabling-jit-compilation"></a>
 
-### Disabling JIT compilation
+_Disabling JIT compilation_
 
 
 If a pattern that starts with (*NO_JIT) is successfully compiled, an attempt by
 the application to apply the JIT optimization by calling
-**pcre2\_jit\_compile()** is ignored.
+`pcre2\_jit\_compile()` is ignored.
 
 <a name="setting-match-resource-limits"></a>
 
-### Setting match resource limits
+_Setting match resource limits_
 
 
-The **pcre2\_match()** function contains a counter that is incremented every
-time it goes round its main loop. The caller of **pcre2\_match()** can set a
+The `pcre2\_match()` function contains a counter that is incremented every
+time it goes round its main loop. The caller of `pcre2\_match()` can set a
 limit on this counter, which therefore limits the amount of computing resource
 used for a match. The maximum depth of nested backtracking can also be limited;
 this indirectly restricts the amount of heap memory that is used, but there is
@@ -160,15 +160,16 @@ also an explicit memory limit that can be set.
 These facilities are provided to catch runaway matches that are provoked by
 patterns with huge matching trees. A common example is a pattern with nested
 unlimited repeats applied to a long string that does not match. When one of
-these limits is reached, **pcre2\_match()** gives an error return. The limits
+these limits is reached, `pcre2\_match()` gives an error return. The limits
 can also be set by items at the start of the pattern of the form
 
-  (*LIMIT_HEAP=d)
-  (*LIMIT_MATCH=d)
-  (*LIMIT_DEPTH=d)
-
+```text
+(*LIMIT_HEAP=d)
+(*LIMIT_MATCH=d)
+(*LIMIT_DEPTH=d)
+```
 where d is any number of decimal digits. However, the value of the setting must
-be less than the value set (or defaulted) by the caller of **pcre2\_match()**
+be less than the value set (or defaulted) by the caller of `pcre2\_match()`
 for it to have any effect. In other words, the pattern writer can lower the
 limits set by the programmer, but not raise them. If there is more than one
 setting of one of these limits, the lower value is used. The heap limit is
@@ -177,10 +178,10 @@ specified in kibibytes (units of 1024 bytes).
 Prior to release 10.30, LIMIT_DEPTH was called LIMIT_RECURSION. This name is
 still recognized for backwards compatibility.
 
-The heap limit applies only when the **pcre2\_match()** or
-**pcre2\_dfa\_match()** interpreters are used for matching. It does not apply
+The heap limit applies only when the `pcre2\_match()` or
+`pcre2\_dfa\_match()` interpreters are used for matching. It does not apply
 to JIT. The match limit is used (but in a different way) when JIT is being
-used, or when **pcre2\_dfa\_match()** is called, to limit computing resource
+used, or when `pcre2\_dfa\_match()` is called, to limit computing resource
 usage by those matching functions. The depth limit is ignored by JIT but is
 relevant for DFA matching, which uses function recursion for recursions within
 the pattern and for lookaround assertions and atomic groups. In this case, the
@@ -188,33 +189,34 @@ depth limit controls the depth of such recursion.
 
 <a name="newline-conventions"></a>
 
-### Newline conventions
+_Newline conventions_
 
 
 PCRE2 supports six different conventions for indicating line breaks in
 strings: a single CR (carriage return) character, a single LF (linefeed)
 character, the two-character sequence CRLF, any of the three preceding, any
 Unicode newline sequence, or the NUL character (binary zero). The
-**pcre2api**
+`pcre2api`
 page has
 further discussion
 about newlines, and shows how to set the newline convention when calling
-**pcre2\_compile()**.
+`pcre2\_compile()`.
 
 It is also possible to specify a newline convention by starting a pattern
 string with one of the following sequences:
 
-  (*CR)        carriage return
-  (*LF)        linefeed
-  (*CRLF)      carriage return, followed by linefeed
-  (*ANYCRLF)   any of the three above
-  (*ANY)       all Unicode newline sequences
-  (*NUL)       the NUL character (binary zero)
+- **(*CR)** - carriage return
+- **(*LF)** - linefeed
+- **(*CRLF)** - carriage return, followed by linefeed
+- **(*ANYCRLF)** - any of the three above
+- **(*ANY)** - all Unicode newline sequences
+- **(*NUL)** - the NUL character (binary zero)
 
 These override the default and the options given to the compiling function. For
 example, on a Unix system where LF is the default newline sequence, the pattern
 
-  (*CR)a.b
+```text
+(*CR)a.b
 
 changes the convention to CR. That pattern matches "a\enb" because LF is no
 longer a newline. If more than one of these settings is present, the last one
@@ -233,7 +235,7 @@ convention.
 
 <a name="specifying-what-er-matches"></a>
 
-### Specifying what \eR matches
+_Specifying what \eR matches_
 
 
 It is possible to restrict \eR to match only CR, LF, or CRLF (instead of the
@@ -244,7 +246,7 @@ corresponding to PCRE2_BSR_UNICODE.
 
 <a name="ebcdic-character-codes"></a>
 
-# Ebcdic Character Codes
+## Ebcdic Character Codes
 
 
 PCRE2 can be compiled to run in an environment that uses EBCDIC as its
@@ -255,14 +257,15 @@ code points greater than 255.
 
 <a name="characters-and-metacharacters"></a>
 
-# Characters and Metacharacters
+## Characters and Metacharacters
 
 
 A regular expression is a pattern that is matched against a subject string from
 left to right. Most characters stand for themselves in a pattern, and match the
 corresponding characters in the subject. As a trivial example, the pattern
 
-  The quick brown fox
+```text
+The quick brown fox
 
 matches a portion of a subject string that is identical to itself. When
 caseless matching is specified (the PCRE2_CASELESS option or (?i) within the
@@ -271,9 +274,9 @@ ASCII characters, K and S, that, in addition to their lower case ASCII
 equivalents, are case-equivalent with Unicode U+212A (Kelvin sign) and U+017F
 (long S) respectively when either PCRE2_UTF or PCRE2_UCP is set, unless the
 PCRE2_EXTRA_CASELESS_RESTRICT option is in force (either passed to
-**pcre2\_compile()** or set by (*CASELESS_RESTRICT) or (?r) within the
+`pcre2\_compile()` or set by (*CASELESS_RESTRICT) or (?r) within the
 pattern). If the PCRE2_EXTRA_TURKISH_CASING option is in force (either passed
-to **pcre2\_compile()** or set by (*TURKISH_CASING) within the pattern), then
+to `pcre2\_compile()` or set by (*TURKISH_CASING) within the pattern), then
 the 'i' letters are matched according to Turkish and Azeri languages.
 
 The power of regular expressions comes from the ability to include wild cards,
@@ -286,18 +289,18 @@ anywhere in the pattern except within square brackets, and those that are
 recognized within square brackets. Outside square brackets, the metacharacters
 are as follows:
 
-  \e      general escape character with several uses
-  ^      assert start of string (or line, in multiline mode)
-  $      assert end of string (or line, in multiline mode)
-  .      match any character except newline (by default)
-  [      start character class definition
-  |      start of alternative branch
-  (      start group or control verb
-  )      end group or control verb
-  *      0 or more quantifier
-  +      1 or more quantifier; also "possessive quantifier"
-  ?      0 or 1 quantifier; also quantifier minimizer
-  {      potential start of min/max quantifier
+- **`\e`** - general escape character with several uses
+- **`^`** - assert start of string (or line, in multiline mode)
+- **`$`** - assert end of string (or line, in multiline mode)
+- **`.`** - match any character except newline (by default)
+- **`[`** - start character class definition
+- **`|`** - start of alternative branch
+- **`(`** - start group or control verb
+- **`)`** - end group or control verb
+- **`*`** - 0 or more quantifier
+- **`+`** - 1 or more quantifier; also "possessive quantifier"
+- **`?`** - 0 or 1 quantifier; also quantifier minimizer
+- **`{`** - potential start of min/max quantifier
 
 Brace characters { and } are also used to enclose data for constructions such
 as \eg{2} or \ek{name}. In almost all uses of braces, space and/or horizontal
@@ -311,11 +314,11 @@ literal.
 Part of a pattern that is in square brackets is called a "character class". In
 a character class the only metacharacters are:
 
-  \e      general escape character
-  ^      negate the class, but only if the first character
-  -      indicates character range
-  [      POSIX character class (if followed by POSIX syntax)
-  ]      terminates the character class
+- **`\e`** - general escape character
+- **`^`** - negate the class, but only if the first character
+- **`-`** - indicates character range
+- **`[`** - POSIX character class (if followed by POSIX syntax)
+- **`]`** - terminates the character class
 
 If a pattern is compiled with the PCRE2_EXTENDED option, most white space in
 the pattern, other than in a character class, within a \eQ...\eE sequence, or
@@ -334,7 +337,7 @@ The following sections describe the use of each of the metacharacters.
 
 <a name="backslash"></a>
 
-# Backslash
+## Backslash
 
 
 The backslash character has several uses. Firstly, if it is followed by a
@@ -362,14 +365,13 @@ backslashes between \eQ and \eE which, its documentation says, "may lead to
 confusing results". PCRE2 treats a backslash between \eQ and \eE just like any
 other character. Note the following examples:
 
-  Pattern            PCRE2 matches   Perl matches
-
-  \eQabc$xyz\eE        abc$xyz        abc followed by the
-                                      contents of $xyz
-  \eQabc\e$xyz\eE       abc\e$xyz       abc\e$xyz
-  \eQabc\eE\e$\eQxyz\eE   abc$xyz        abc$xyz
-  \eQA\eB\eE            A\eB            A\eB
-  \eQ\e\eE              \e              \e\eE
+- **Pattern** - PCRE2 matches   Perl matches
+- **`\eQabc$xyz\eE`** - abc$xyz        abc followed by the
+contents of $xyz
+- **`\eQabc\e$xyz\eE`** - abc\e$xyz       abc\e$xyz
+- **`\eQabc\eE\e$\eQxyz\eE`** - abc$xyz        abc$xyz
+- **`\eQA\eB\eE`** - A\eB            A\eB
+- **`\eQ\e\eE`** - \e              \e\eE
 
 The \eQ...\eE sequence is recognized both inside and outside character classes.
 An isolated \eE that is not preceded by \eQ is ignored. If \eQ is not followed
@@ -387,7 +389,7 @@ a quantifier a sequence such as {\eQ1\eE,2} is treated as the literal string
 
 <a name="non-printing-characters"></a>
 
-### Non-printing characters
+_Non-printing characters_
 
 
 A second use of backslash provides a way of encoding non-printing characters
@@ -397,20 +399,20 @@ text editing, it is often easier to use one of the following escape sequences
 instead of the binary character it represents. In an ASCII or Unicode
 environment, these escapes are as follows:
 
-  \ea          alarm, that is, the BEL character (hex 07)
-  \ecx         "control-x", where x is a non-control ASCII character
-  \ee          escape (hex 1B)
-  \ef          form feed (hex 0C)
-  \en          linefeed (hex 0A)
-  \er          carriage return (hex 0D) (but see below)
-  \et          tab (hex 09)
-  \e0dd        character with octal code 0dd
-  \eddd        character with octal code ddd, or back reference
-  \eo{ddd..}   character with octal code ddd..
-  \exhh        character with hex code hh
-  \ex{hhh..}   character with hex code hhh..
-  \eN{U+hhh..} character with Unicode hex code point hhh..
-
+- **`\ea`** - alarm, that is, the BEL character (hex 07)
+- **`\ecx`** - "control-x", where x is a non-control ASCII character
+- **`\ee`** - escape (hex 1B)
+- **`\ef`** - form feed (hex 0C)
+- **`\en`** - linefeed (hex 0A)
+- **`\er`** - carriage return (hex 0D) (but see below)
+- **`\et`** - tab (hex 09)
+- **`\e0dd`** - character with octal code 0dd
+- **`\eddd`** - character with octal code ddd, or back reference
+- **`\eo{ddd..}`** - character with octal code ddd..
+- **`\exhh`** - character with hex code hh
+- **`\ex{hhh..}`** - character with hex code hhh..
+\eN{U+hhh..} character with Unicode hex code point hhh..
+```
 A description of how back references work is given
 later,
 following the discussion of
@@ -466,7 +468,7 @@ a compile-time error occurs.
 
 When PCRE2 is compiled in EBCDIC mode, \eN{U+hhh..} is not supported. \ea, \ee,
 \ef, \en, \er, and \et generate the appropriate EBCDIC code values. The \ec
-escape is processed as specified for Perl in the **perlebcdic** document. The
+escape is processed as specified for Perl in the `perlebcdic` document. The
 only characters that are allowed after \ec are A-Z, a-z, or one of @, [, \e, ],
 ^, _, or ?. Any other character provokes a compile-time error. The sequence
 \ec@ encodes character code 0; after \ec the letters (in either case) encode
@@ -487,7 +489,7 @@ values, PCRE2 makes \ec? generate 95; otherwise it generates 255.
 
 <a name="octal-escapes-and-back-references"></a>
 
-### Octal escapes and back references
+_Octal escapes and back references_
 
 
 The escape \eo must be followed by a sequence of octal digits, enclosed in
@@ -518,7 +520,7 @@ character code points, and \eg{...} to specify backreferences.
 
 <a name="perl-rules-for-non-class-backslash-1-9"></a>
 
-### Perl rules for non-class backslash 1-9
+_Perl rules for non-class backslash 1-9_
 
 
 All the digits that follow the backslash are read as a decimal number. If the
@@ -527,19 +529,19 @@ that many previous capture groups in the expression, the entire sequence is
 taken as a back reference. Otherwise, up to three octal digits are read to form
 a character code. For example:
 
-  \e040   is another way of writing an ASCII space
-  \e40    is the same, provided there are fewer than 40
-            previous capture groups
-  \e7     is always a backreference
-  \e11    might be a backreference, or another way of
-            writing a tab
-  \e011   is always a tab
-  \e0113  is a tab followed by the character "3"
-  \e113   might be a backreference, otherwise the
-            character with octal code 113
-  \e377   might be a backreference, otherwise
-            the value 255 (decimal)
-  \e81    is always a backreference
+- **`\e040`** - is another way of writing an ASCII space
+- **`\e40`** - is the same, provided there are fewer than 40
+previous capture groups
+- **`\e7`** - is always a backreference
+- **`\e11`** - might be a backreference, or another way of
+writing a tab
+- **`\e011`** - is always a tab
+\e0113  is a tab followed by the character "3"
+- **`\e113`** - might be a backreference, otherwise the
+character with octal code 113
+- **`\e377`** - might be a backreference, otherwise
+the value 255 (decimal)
+- **`\e81`** - is always a backreference
 
 Note that octal values of 100 or greater that are specified using this syntax
 must not be introduced by a leading zero, because no more than three octal
@@ -547,7 +549,7 @@ digits are ever read.
 
 <a name="python-rules-for-non_class-backslash-1-9"></a>
 
-### Python rules for non_class backslash 1-9
+_Python rules for non_class backslash 1-9_
 
 
 If there are at least three octal digits after the backslash, exactly three are
@@ -561,26 +563,22 @@ group.
 
 <a name="constraints-on-character-values"></a>
 
-### Constraints on character values
+_Constraints on character values_
 
 
 Characters that are specified using octal or hexadecimal numbers are
 limited to certain values, as follows:
 
-  8-bit non-UTF mode    no greater than 0xff
-  16-bit non-UTF mode   no greater than 0xffff
-  32-bit non-UTF mode   no greater than 0xffffffff
-  All UTF modes         no greater than 0x10ffff and a valid code point
-
+- **8-bit non-UTF mode** - no greater than 0xff- **16-bit non-UTF mode** - no greater than 0xffff- **32-bit non-UTF mode** - no greater than 0xffffffff- **All UTF modes** - no greater than 0x10ffff and a valid code point
 Invalid Unicode code points are all those in the range 0xd800 to 0xdfff (the
 so-called "surrogate" code points). The check for these can be disabled by the
-caller of **pcre2\_compile()** by setting the option
+caller of `pcre2\_compile()` by setting the option
 PCRE2_EXTRA_ALLOW_SURROGATE_ESCAPES. However, this is possible only in UTF-8
 and UTF-32 modes, because these values are not representable in UTF-16.
 
 <a name="escape-sequences-in-character-classes"></a>
 
-### Escape sequences in character classes
+_Escape sequences in character classes_
 
 
 All the sequences that define a single character value can be used both inside
@@ -594,7 +592,7 @@ character class, these sequences have different meanings.
 
 <a name="unsupported-escape-sequences"></a>
 
-### Unsupported escape sequences
+_Unsupported escape sequences_
 
 
 In Perl, the sequences \eF, \el, \eL, \eu, and \eU are recognized by its string
@@ -606,7 +604,7 @@ described above.
 
 <a name="absolute-and-relative-backreferences"></a>
 
-### Absolute and relative backreferences
+_Absolute and relative backreferences_
 
 
 The sequence \eg followed by a signed or unsigned number, optionally enclosed
@@ -618,7 +616,7 @@ parenthesized groups.
 
 <a name="absolute-and-relative-subroutine-calls"></a>
 
-### Absolute and relative subroutine calls
+_Absolute and relative subroutine calls_
 
 
 For compatibility with Oniguruma, the non-Perl syntax \eg followed by a name or
@@ -632,22 +630,22 @@ call.
 
 <a name="generic-character-types"></a>
 
-### Generic character types
+_Generic character types_
 
 
 Another use of backslash is for specifying generic character types:
 
-  \ed     any decimal digit
-  \eD     any character that is not a decimal digit
-  \eh     any horizontal white space character
-  \eH     any character that is not a horizontal white space character
-  \eN     any character that is not a newline
-  \es     any white space character
-  \eS     any character that is not a white space character
-  \ev     any vertical white space character
-  \eV     any character that is not a vertical white space character
-  \ew     any "word" character
-  \eW     any "non-word" character
+- **`\ed`** - any decimal digit
+- **`\eD`** - any character that is not a decimal digit
+- **`\eh`** - any horizontal white space character
+- **`\eH`** - any character that is not a horizontal white space character
+- **`\eN`** - any character that is not a newline
+- **`\es`** - any white space character
+- **`\eS`** - any character that is not a white space character
+- **`\ev`** - any vertical white space character
+- **`\eV`** - any character that is not a vertical white space character
+- **`\ew`** - any "word" character
+- **`\eW`** - any "non-word" character
 
 The \eN escape sequence has the same meaning as
 the "." metacharacter
@@ -677,7 +675,7 @@ low-valued character tables, and may vary if locale-specific matching is taking
 place (see
 "Locale support"
 in the
-**pcre2api**
+`pcre2api`
 page). For example, in a French locale such as "fr_FR" in Unix-like systems,
 or "french" in Windows, some character codes greater than 127 are used for
 accented letters, and these are then matched by \ew. The use of locales with
@@ -691,10 +689,11 @@ support was available, mainly for efficiency reasons. If the PCRE2_UCP option
 is set, the behaviour is changed so that Unicode properties are used to
 determine character types, as follows:
 
-  \ed  any character that matches \ep{Nd} (decimal digit)
-  \es  any character that matches \ep{Z} or \eh or \ev
-  \ew  any character that matches \ep{L}, \ep{N}, \ep{Mn}, or \ep{Pc}
-
+```text
+\ed  any character that matches \ep{Nd} (decimal digit)
+\es  any character that matches \ep{Z} or \eh or \ev
+\ew  any character that matches \ep{L}, \ep{N}, \ep{Mn}, or \ep{Pc}
+```
 The addition of \ep{Mn} (non-spacing mark) and the replacement of an explicit
 test for underscore with a test for \ep{Pc} (connector punctuation) happened in
 PCRE2 release 10.43. This brings PCRE2 into line with Perl.
@@ -715,49 +714,24 @@ The sequences \eh, \eH, \ev, and \eV, in contrast to the other sequences, which
 match only ASCII characters by default, always match a specific list of code
 points, whether or not PCRE2_UCP is set. The horizontal space characters are:
 
-  U+0009     Horizontal tab (HT)
-  U+0020     Space
-  U+00A0     Non-break space
-  U+1680     Ogham space mark
-  U+180E     Mongolian vowel separator
-  U+2000     En quad
-  U+2001     Em quad
-  U+2002     En space
-  U+2003     Em space
-  U+2004     Three-per-em space
-  U+2005     Four-per-em space
-  U+2006     Six-per-em space
-  U+2007     Figure space
-  U+2008     Punctuation space
-  U+2009     Thin space
-  U+200A     Hair space
-  U+202F     Narrow no-break space
-  U+205F     Medium mathematical space
-  U+3000     Ideographic space
-
+- **U+0009** - Horizontal tab (HT)- **U+0020** - Space- **U+00A0** - Non-break space- **U+1680** - Ogham space mark- **U+180E** - Mongolian vowel separator- **U+2000** - En quad- **U+2001** - Em quad- **U+2002** - En space- **U+2003** - Em space- **U+2004** - Three-per-em space- **U+2005** - Four-per-em space- **U+2006** - Six-per-em space- **U+2007** - Figure space- **U+2008** - Punctuation space- **U+2009** - Thin space- **U+200A** - Hair space- **U+202F** - Narrow no-break space- **U+205F** - Medium mathematical space- **U+3000** - Ideographic space
 The vertical space characters are:
 
-  U+000A     Linefeed (LF)
-  U+000B     Vertical tab (VT)
-  U+000C     Form feed (FF)
-  U+000D     Carriage return (CR)
-  U+0085     Next line (NEL)
-  U+2028     Line separator
-  U+2029     Paragraph separator
-
+- **U+000A** - Linefeed (LF)- **U+000B** - Vertical tab (VT)- **U+000C** - Form feed (FF)- **U+000D** - Carriage return (CR)- **U+0085** - Next line (NEL)- **U+2028** - Line separator- **U+2029** - Paragraph separator
 In 8-bit, non-UTF-8 mode, only the characters with code points less than 256
 are relevant.
 
 <a name="newline-sequences"></a>
 
-### Newline sequences
+_Newline sequences_
 
 
 Outside a character class, by default, the escape sequence \eR matches any
 Unicode newline sequence. In 8-bit non-UTF-8 mode \eR is equivalent to the
 following:
 
-  (?&gt;\er\en|\en|\ex0b|\ef|\er|\ex85)
+```text
+(?&gt;\er\en|\en|\ex0b|\ef|\er|\ex85)
 
 This is an example of an "atomic group", details of which are given
 below.
@@ -779,8 +753,8 @@ be requested via the PCRE2_BSR_UNICODE option. It is also possible to specify
 these settings by starting a pattern string with one of the following
 sequences:
 
-  (*BSR_ANYCRLF)   CR, LF, or CRLF only
-  (*BSR_UNICODE)   any Unicode newline sequence
+- **(*BSR_ANYCRLF)** - CR, LF, or CRLF only
+- **(*BSR_UNICODE)** - any Unicode newline sequence
 
 These override the default and the options given to the compiling function.
 Note that these special settings, which are not Perl-compatible, are recognized
@@ -788,7 +762,8 @@ only at the very start of a pattern, and that they must be in upper case. If
 more than one of them is present, the last one is used. They can be combined
 with a change of newline convention; for example, a pattern can start with:
 
-  (*ANY)(*BSR_ANYCRLF)
+```text
+(*ANY)(*BSR_ANYCRLF)
 
 They can also be combined with the (*UTF) or (*UCP) special sequences. Inside a
 character class, \eR is treated as an unrecognized escape sequence, and causes
@@ -796,7 +771,7 @@ an error.
 
 <a name="unicode-character-properties"></a>
 
-### Unicode character properties
+_Unicode character properties_
 
 
 When PCRE2 is built with Unicode support (the default), three additional escape
@@ -815,9 +790,9 @@ PCRE2_UCP option or by starting the pattern with (*UCP).
 
 The extra escape sequences that provide property support are:
 
-  \ep{_xx_}   a character with the _xx_ property
-  \eP{_xx_}   a character without the _xx_ property
-  \eX       a Unicode extended grapheme cluster
+- **`\ep{_xx_}`** - a character with the _xx_ property
+- **`\eP{_xx_}`** - a character without the _xx_ property
+- **`\eX`** - a Unicode extended grapheme cluster
 
 For compatibility with Perl, negation can be specified by including a
 circumflex between the opening brace and the property. For example, \ep{^Lu} is
@@ -835,12 +810,13 @@ case sensitive. Note, however, that the escapes themselves, \ep and \eP,
 _are_ case sensitive. There are abbreviations for many names. The following
 examples are all equivalent:
 
-  \ep{bidiclass=al}
-  \ep{BC=al}
-  \ep{ Bidi_Class : AL }
-  \ep{ Bi-di class = Al }
-  \eP{ ^ Bi-di class = Al }
-
+```text
+\ep{bidiclass=al}
+\ep{BC=al}
+\ep{ Bidi_Class : AL }
+\ep{ Bi-di class = Al }
+\eP{ ^ Bi-di class = Al }
+```
 There is support for Unicode script names, Unicode general category properties,
 "Any", which matches any character (including newline), Bidi_Class, a number of
 binary (yes/no) properties, and some special PCRE2 properties (described
@@ -851,7 +827,7 @@ match failure.
 
 <a name="script-properties-for-ep-and-ep"></a>
 
-### Script properties for \ep and \eP
+_Script properties for \ep and \eP_
 
 
 There are three different syntax forms for matching a script. Each Unicode
@@ -872,12 +848,13 @@ part of an identified script are lumped together as "Common". The current list
 of recognized script names and their 4-character abbreviations can be obtained
 by running this command:
 
-  pcre2test -LS
+```text
+pcre2test -LS
 
 
 <a name="the-general-category-property-for-ep-and-ep"></a>
 
-### The general category property for \ep and \eP
+_The general category property for \ep and \eP_
 
 
 Each character has exactly one Unicode general category property, specified by
@@ -886,56 +863,19 @@ includes all the general category properties that start with that letter. In
 this case, in the absence of negation, the curly brackets in the escape
 sequence are optional; these two examples have the same effect:
 
-  \ep{L}
-  \epL
-
+```text
+\ep{L}
+\epL
+```
 The following general category property codes are supported:
 
-  C     Other
-  Cc    Control
-  Cf    Format
-  Cn    Unassigned
-  Co    Private use
-  Cs    Surrogate
-
-  L     Letter
-  Lc    Cased letter
-  Ll    Lower case letter
-  Lm    Modifier letter
-  Lo    Other letter
-  Lt    Title case letter
-  Lu    Upper case letter
-
-  M     Mark
-  Mc    Spacing mark
-  Me    Enclosing mark
-  Mn    Non-spacing mark
-
-  N     Number
-  Nd    Decimal number
-  Nl    Letter number
-  No    Other number
-
-  P     Punctuation
-  Pc    Connector punctuation
-  Pd    Dash punctuation
-  Pe    Close punctuation
-  Pf    Final punctuation
-  Pi    Initial punctuation
-  Po    Other punctuation
-  Ps    Open punctuation
-
-  S     Symbol
-  Sc    Currency symbol
-  Sk    Modifier symbol
-  Sm    Mathematical symbol
-  So    Other symbol
-
-  Z     Separator
-  Zl    Line separator
-  Zp    Paragraph separator
-  Zs    Space separator
-
+- **C** - Other- **Cc** - Control- **Cf** - Format- **Cn** - Unassigned- **Co** - Private use- **Cs** - Surrogate
+- **L** - Letter- **Lc** - Cased letter- **Ll** - Lower case letter- **Lm** - Modifier letter- **Lo** - Other letter- **Lt** - Title case letter- **Lu** - Upper case letter
+- **M** - Mark- **Mc** - Spacing mark- **Me** - Enclosing mark- **Mn** - Non-spacing mark
+- **N** - Number- **Nd** - Decimal number- **Nl** - Letter number- **No** - Other number
+- **P** - Punctuation- **Pc** - Connector punctuation- **Pd** - Dash punctuation- **Pe** - Close punctuation- **Pf** - Final punctuation- **Pi** - Initial punctuation- **Po** - Other punctuation- **Ps** - Open punctuation
+- **S** - Symbol- **Sc** - Currency symbol- **Sk** - Modifier symbol- **Sm** - Mathematical symbol- **So** - Other symbol
+- **Z** - Separator- **Zl** - Line separator- **Zp** - Paragraph separator- **Zs** - Space separator
 Perl originally used the name L& for the Lc property. This is still supported
 by Perl, but discouraged. PCRE2 also still supports it. This property matches
 any character that has the Lu, Ll, or Lt property, in other words, any letter
@@ -950,7 +890,7 @@ character when PCRE2 is not in UTF mode (using the 16-bit or 32-bit library).
 However, they are not valid in Unicode strings and so cannot be tested by PCRE2
 in UTF mode, unless UTF validity checking has been turned off (see the
 discussion of PCRE2_NO_UTF_CHECK in the
-**pcre2api**
+`pcre2api`
 page).
 
 The long synonyms for property names that Perl supports (such as \ep{Letter})
@@ -963,57 +903,35 @@ Unicode table.
 
 <a name="binary-yesno-properties-for-ep-and-ep"></a>
 
-### Binary (yes/no) properties for \ep and \eP
+_Binary (yes/no) properties for \ep and \eP_
 
 
 Unicode defines a number of binary properties, that is, properties whose only
 values are true or false. You can obtain a list of those that are recognized by
 \ep and \eP, along with their abbreviations, by running this command:
 
-  pcre2test -LP
+```text
+pcre2test -LP
 
 
 <a name="the-bidi_class-property-for-ep-and-ep"></a>
 
-### The Bidi_Class property for \ep and \eP
+_The Bidi_Class property for \ep and \eP_
 
 
-  \ep{Bidi_Class:&lt;class&gt;}   matches a character with the given class
-  \ep{BC:&lt;class&gt;}           matches a character with the given class
+- **`\ep{Bidi_Class:&lt;class&gt;}`** - matches a character with the given class
+- **`\ep{BC:&lt;class&gt;}`** - matches a character with the given class
 
 The recognized classes are:
 
-  AL          Arabic letter
-  AN          Arabic number
-  B           paragraph separator
-  BN          boundary neutral
-  CS          common separator
-  EN          European number
-  ES          European separator
-  ET          European terminator
-  FSI         first strong isolate
-  L           left-to-right
-  LRE         left-to-right embedding
-  LRI         left-to-right isolate
-  LRO         left-to-right override
-  NSM         non-spacing mark
-  ON          other neutral
-  PDF         pop directional format
-  PDI         pop directional isolate
-  R           right-to-left
-  RLE         right-to-left embedding
-  RLI         right-to-left isolate
-  RLO         right-to-left override
-  S           segment separator
-  WS          white space
-
+- **AL** - Arabic letter- **AN** - Arabic number- **B** - paragraph separator- **BN** - boundary neutral- **CS** - common separator- **EN** - European number- **ES** - European separator- **ET** - European terminator- **FSI** - first strong isolate- **L** - left-to-right- **LRE** - left-to-right embedding- **LRI** - left-to-right isolate- **LRO** - left-to-right override- **NSM** - non-spacing mark- **ON** - other neutral- **PDF** - pop directional format- **PDI** - pop directional isolate- **R** - right-to-left- **RLE** - right-to-left embedding- **RLI** - right-to-left isolate- **RLO** - right-to-left override- **S** - segment separator- **WS** - white space
 As in all property specifications, an equals sign may be used instead of a
 colon and the class names are case-insensitive. Only the short names listed
 above are recognized; PCRE2 does not at present support any long alternatives.
 
 <a name="extended-grapheme-clusters"></a>
 
-### Extended grapheme clusters
+_Extended grapheme clusters_
 
 
 The \eX escape matches any number of Unicode characters that form an "extended
@@ -1059,7 +977,7 @@ before the break point.
 
 <a name="pcre2s-additional-properties"></a>
 
-### PCRE2's additional properties
+_PCRE2's additional properties_
 
 
 As well as the standard Unicode properties described above, PCRE2 supports four
@@ -1068,11 +986,7 @@ and \es to use Unicode properties. PCRE2 uses these non-standard, non-Perl
 properties internally when PCRE2_UCP is set. However, they may also be used
 explicitly. These properties are:
 
-  Xan   Any alphanumeric character
-  Xps   Any POSIX space character
-  Xsp   Any Perl space character
-  Xwd   Any Perl "word" character
-
+- **Xan** - Any alphanumeric character- **Xps** - Any POSIX space character- **Xsp** - Any Perl space character- **Xwd** - Any Perl "word" character
 Xan matches characters that have either the L (letter) or the N (number)
 property. Xps matches the characters tab, linefeed, vertical tab, form feed, or
 carriage return, and any other character that has the Z (separator) property
@@ -1092,19 +1006,21 @@ sequences but the characters that they represent.)
 
 <a name="resetting-the-match-start"></a>
 
-### Resetting the match start
+_Resetting the match start_
 
 
 In normal use, the escape sequence \eK causes any previously matched characters
 not to be included in the final matched sequence that is returned. For example,
 the pattern:
 
-  foo\eKbar
+```text
+foo\eKbar
 
 matches "foobar", but reports that it has matched "bar". \eK does not interact
 with anchoring in any way. The pattern:
 
-  ^foo\eKbar
+```text
+^foo\eKbar
 
 matches only when the subject begins with "foobar" (in single line mode),
 though it again reports the matched string as "bar". This feature is similar to
@@ -1116,29 +1032,31 @@ use of \eK does not interfere with the setting of
 captured substrings.
 For example, when the pattern
 
-  (foo)\eKbar
+```text
+(foo)\eKbar
 
 matches "foobar", the first substring is still set to "foo".
 
 From version 5.32.0 Perl forbids the use of \eK in lookaround assertions. From
 release 10.38 PCRE2 also forbids this by default. However, the
 PCRE2_EXTRA_ALLOW_LOOKAROUND_BSK option can be used when calling
-**pcre2\_compile()** to re-enable the previous behaviour. When this option is
+`pcre2\_compile()` to re-enable the previous behaviour. When this option is
 set, \eK is acted upon when it occurs inside positive assertions, but is
 ignored in negative assertions. Note that when a pattern such as (?=ab\eK)
 matches, the reported start of the match can be greater than the end of the
 match. Using \eK in a lookbehind assertion at the start of a pattern can also
 lead to odd effects. For example, consider this pattern:
 
-  (?&lt;=\eKfoo)bar
+```text
+(?&lt;=\eKfoo)bar
 
-If the subject is "foobar", a call to **pcre2\_match()** with a starting
+If the subject is "foobar", a call to `pcre2\_match()` with a starting
 offset of 3 succeeds and reports the matching string as "foobar", that is, the
 start of the reported match is earlier than where the match started.
 
 <a name="simple-assertions"></a>
 
-### Simple assertions
+_Simple assertions_
 
 
 The final use of backslash is for certain simple assertions. An assertion
@@ -1148,13 +1066,13 @@ groups for more complicated assertions is described
 below.
 The backslashed assertions are:
 
-  \eb     matches at a word boundary
-  \eB     matches when not at a word boundary
-  \eA     matches at the start of the subject
-  \eZ     matches at the end of the subject
-          also matches before a newline at the end of the subject
-  \ez     matches only at the end of the subject
-  \eG     matches at the first matching position in the subject
+- **`\eb`** - matches at a word boundary
+- **`\eB`** - matches when not at a word boundary
+- **`\eA`** - matches at the start of the subject
+- **`\eZ`** - matches at the end of the subject
+also matches before a newline at the end of the subject
+- **`\ez`** - matches only at the end of the subject
+- **`\eG`** - matches at the first matching position in the subject
 
 Inside a character class, \eb has a different meaning; it matches the backspace
 character. If any other of these assertions appears in a character class, an
@@ -1176,7 +1094,7 @@ start and end of the subject string, whatever options are set. Thus, they are
 independent of multiline mode. These three assertions are not affected by the
 PCRE2_NOTBOL or PCRE2_NOTEOL options, which affect only the behaviour of the
 circumflex and dollar metacharacters. However, if the _startoffset_
-argument of **pcre2\_match()** is non-zero, indicating that matching is to
+argument of `pcre2\_match()` is non-zero, indicating that matching is to
 start at a point other than the beginning of the subject, \eA can never match.
 The difference between \eZ and \ez is that \eZ matches before a newline at the
 end of the string as well as at the very end, whereas \ez matches only at the
@@ -1184,8 +1102,8 @@ end.
 
 The \eG assertion is true only when the current matching position is at the
 start point of the matching process, as specified by the _startoffset_
-argument of **pcre2\_match()**. It differs from \eA when the value of
-_startoffset_ is non-zero. By calling **pcre2\_match()** multiple times
+argument of `pcre2\_match()`. It differs from \eA when the value of
+_startoffset_ is non-zero. By calling `pcre2\_match()` multiple times
 with appropriate arguments, you can mimic Perl's /g option, and it is in this
 kind of implementation where \eG can be useful.
 
@@ -1201,7 +1119,7 @@ regular expression.
 
 <a name="circumflex-and-dollar"></a>
 
-# Circumflex and Dollar
+## Circumflex and Dollar
 
 
 The circumflex and dollar metacharacters are zero-width assertions. That is,
@@ -1215,7 +1133,7 @@ recognized as newlines.
 Outside a character class, in the default matching mode, the circumflex
 character is an assertion that is true only if the current matching point is at
 the start of the subject string. If the _startoffset_ argument of
-**pcre2\_match()** is non-zero, or if PCRE2_NOTBOL is set, circumflex can
+`pcre2\_match()` is non-zero, or if PCRE2_NOTBOL is set, circumflex can
 never match if the PCRE2_MULTILINE option is unset. Inside a character class,
 circumflex has an entirely different meaning
 (see below).
@@ -1252,7 +1170,7 @@ For example, the pattern /^abc$/ matches the subject string "def\enabc" (where
 \en represents a newline) in multiline mode, but not otherwise. Consequently,
 patterns that are anchored in single line mode because all branches start with
 ^ are not anchored in multiline mode, and a match for circumflex is possible
-when the _startoffset_ argument of **pcre2\_match()** is non-zero. The
+when the _startoffset_ argument of `pcre2\_match()` is non-zero. The
 PCRE2_DOLLAR_ENDONLY option is ignored if PCRE2_MULTILINE is set.
 
 When the newline convention (see
@@ -1270,7 +1188,7 @@ end of the subject in both modes, and if all branches of a pattern start with
 
 <a name="full-stop-period-dot-and-en"></a>
 
-# Full Stop (Period, Dot) and \En
+## Full Stop (Period, Dot) and \En
 
 
 Outside a character class, a dot in the pattern matches any one character in
@@ -1307,7 +1225,7 @@ name; PCRE2 does not support this.
 
 <a name="matching-a-single-code-unit"></a>
 
-# Matching a Single Code Unit
+## Matching a Single Code Unit
 
 
 Outside a character class, the escape sequence \eC matches any one code unit,
@@ -1332,7 +1250,7 @@ PCRE2 does not allow \eC to appear in lookbehind assertions
 (described below)
 in UTF-8 or UTF-16 modes, because this would make it impossible to calculate
 the length of the lookbehind. Neither the alternative matching function
-**pcre2\_dfa\_match()** nor the JIT optimizer support \eC in these UTF modes.
+`pcre2\_dfa\_match()` nor the JIT optimizer support \eC in these UTF modes.
 The former gives a match-time error; the latter fails to optimize and so the
 match is always run using the interpreter.
 
@@ -1345,7 +1263,8 @@ it that avoids the problem of malformed UTF-8 or UTF-16 characters is to use a
 lookahead to check the length of the next character, as in this pattern, which
 could be used with a UTF-8 string (ignore white space and line breaks):
 
-  (?| (?=[\ex00-\ex7f])(\eC) |
+```text
+(?| (?=[\ex00-\ex7f])(\eC) |
       (?=[\ex80-\ex{7ff}])(\eC)(\eC) |
       (?=[\ex{800}-\ex{ffff}])(\eC)(\eC)(\eC) |
       (?=[\ex{10000}-\ex{1fffff}])(\eC)(\eC)(\eC)(\eC))
@@ -1360,7 +1279,7 @@ character's individual bytes are then captured by the appropriate number of
 
 <a name="square-brackets-and-character-classes"></a>
 
-# Square Brackets and Character Classes
+## Square Brackets and Character Classes
 
 
 An opening square bracket introduces a character class, terminated by a closing
@@ -1474,7 +1393,7 @@ escaping other non-alphanumeric characters does no harm.
 
 <a name="uts18-extended-character-classes"></a>
 
-# Uts#18 Extended Character Classes
+## Uts#18 Extended Character Classes
 
 The PCRE2_ALT_EXTENDED_CLASS option enables an alternative to Perl's "(?[...])"
 syntax, allowing instead extended class behaviour inside ordinary "[...]"
@@ -1521,33 +1440,20 @@ differences in behaviour between PCRE2 and another major engine.
 
 <a name="posix-character-classes"></a>
 
-# Posix Character Classes
+## Posix Character Classes
 
 
 Perl supports the POSIX notation for character classes. This uses names
 enclosed by [: and :] within the enclosing square brackets. PCRE2 also supports
 this notation. For example,
 
-  [01[:alpha:]%]
+```text
+[01[:alpha:]%]
 
 matches "0", "1", any alphabetic character, or "%". The supported class names
 are:
 
-  alnum    letters and digits
-  alpha    letters
-  ascii    character codes 0 - 127
-  blank    space or tab only
-  cntrl    control characters
-  digit    decimal digits (same as \ed)
-  graph    printing characters, excluding space
-  lower    lower case letters
-  print    printing characters, including space
-  punct    printing characters, excluding letters and digits and space
-  space    white space (the same as \es from PCRE2 8.34)
-  upper    upper case letters
-  word     "word" characters (same as \ew)
-  xdigit   hexadecimal digits
-
+- **alnum** - letters and digits- **alpha** - letters- **ascii** - character codes 0 - 127- **blank** - space or tab only- **cntrl** - control characters- **digit** - decimal digits (same as \ed)- **graph** - printing characters, excluding space- **lower** - lower case letters- **print** - printing characters, including space- **punct** - printing characters, excluding letters and digits and space- **space** - white space (the same as \es from PCRE2 8.34)- **upper** - upper case letters- **word** - "word" characters (same as \ew)- **xdigit** - hexadecimal digits
 The default "space" characters are HT (9), LF (10), VT (11), FF (12), CR (13),
 and space (32). If locale-specific matching is taking place, the list of space
 characters may be different; there may be fewer or more of them. "Space" and
@@ -1557,7 +1463,8 @@ The name "word" is a Perl extension, and "blank" is a GNU extension from Perl
 5.8. Another Perl extension is negation, which is indicated by a ^ character
 after the colon. For example,
 
-  [12[:^digit:]]
+```text
+[12[:^digit:]]
 
 matches "1", "2", or any non-digit. PCRE2 (and Perl) also recognize the POSIX
 syntax [.ch.] and [=ch=] where "ch" is a "collating element", but these are not
@@ -1570,41 +1477,40 @@ unless certain options are set (see below), some of the classes are changed so
 that Unicode character properties are used. This is achieved by replacing
 POSIX classes with other sequences, as follows:
 
-  [:alnum:]  becomes  \ep{Xan}
-  [:alpha:]  becomes  \ep{L}
-  [:blank:]  becomes  \eh
-  [:cntrl:]  becomes  \ep{Cc}
-  [:digit:]  becomes  \ep{Nd}
-  [:lower:]  becomes  \ep{Ll}
-  [:space:]  becomes  \ep{Xps}
-  [:upper:]  becomes  \ep{Lu}
-  [:word:]   becomes  \ep{Xwd}
+```text
+[:alnum:]  becomes  \ep{Xan}
+[:alpha:]  becomes  \ep{L}
+[:blank:]  becomes  \eh
+[:cntrl:]  becomes  \ep{Cc}
+[:digit:]  becomes  \ep{Nd}
+[:lower:]  becomes  \ep{Ll}
+[:space:]  becomes  \ep{Xps}
+[:upper:]  becomes  \ep{Lu}
+- **`[:word:]`** - becomes  \ep{Xwd}
 
 Negated versions, such as [:^alpha:] use \eP instead of \ep. Four other POSIX
 classes are handled specially in UCP mode:
 
 * [:graph:]  
-  This matches characters that have glyphs that mark the page when printed. In
-  Unicode property terms, it matches all characters with the L, M, N, P, S, or Cf
-  properties, except for:
-
-  U+061C           Arabic Letter Mark
-  U+180E           Mongolian Vowel Separator
-  U+2066 - U+2069  Various "isolate"s
+This matches characters that have glyphs that mark the page when printed. In
+Unicode property terms, it matches all characters with the L, M, N, P, S, or Cf
+properties, except for:
+```
+- **U+061C** - Arabic Letter Mark- **U+180E** - Mongolian Vowel Separator  U+2066 - U+2069  Various "isolate"s
 
 
 * [:print:]  
-  This matches the same characters as [:graph:] plus space characters that are
-  not controls, that is, characters with the Zs property.
+This matches the same characters as [:graph:] plus space characters that are
+not controls, that is, characters with the Zs property.
 * [:punct:]  
-  This matches all characters that have the Unicode P (punctuation) property,
-  plus those characters with code points less than 256 that have the S (Symbol)
-  property.
+This matches all characters that have the Unicode P (punctuation) property,
+plus those characters with code points less than 256 that have the S (Symbol)
+property.
 * [:xdigit:]  
-  In addition to the ASCII hexadecimal digits, this also matches the "fullwidth"
-  versions of those characters, whose Unicode code points start at U+FF10. This
-  is a change that was made in PCRE release 10.43 for Perl compatibility.
-
+In addition to the ASCII hexadecimal digits, this also matches the "fullwidth"
+versions of those characters, whose Unicode code points start at U+FF10. This
+is a change that was made in PCRE release 10.43 for Perl compatibility.
+```
 The other POSIX classes are unchanged by PCRE2_UCP, and match only characters
 with code points less than 256.
 
@@ -1617,16 +1523,17 @@ for all POSIX classes, including [:digit:] and [:xdigit:]. Within a pattern,
 
 <a name="compatibility-feature-for-word-boundaries"></a>
 
-# Compatibility Feature for Word Boundaries
+## Compatibility Feature for Word Boundaries
 
 
 In the POSIX.2 compliant library that was included in 4.4BSD Unix, the ugly
 syntax [[:&lt;:]] and [[:&gt;:]] is used for matching "start of word" and "end of
 word". PCRE2 treats these items as follows:
 
-  [[:&lt;:]]  is converted to  \eb(?=\ew)
-  [[:&gt;:]]  is converted to  \eb(?&lt;=\ew)
-
+```text
+[[:&lt;:]]  is converted to  \eb(?=\ew)
+[[:&gt;:]]  is converted to  \eb(?&lt;=\ew)
+```
 Only these exact character sequences are recognized. A sequence such as
 [a[:&lt;:]b] provokes error for an unrecognized POSIX class name. This support is
 not compatible with Perl. It is provided to help migrations from other
@@ -1641,13 +1548,14 @@ it also affects these POSIX sequences.
 
 <a name="vertical-bar"></a>
 
-# Vertical Bar
+## Vertical Bar
 
 
 Vertical bar characters are used to separate alternative patterns. For example,
 the pattern
 
-  gilbert|sullivan
+```text
+gilbert|sullivan
 
 matches either "gilbert" or "sullivan". Any number of alternatives may appear,
 and an empty alternative is permitted (matching the empty string). The matching
@@ -1659,22 +1567,23 @@ alternative in the group.
 
 <a name="internal-option-setting"></a>
 
-# Internal Option Setting
+## Internal Option Setting
 
 
 The settings of several options can be changed within a pattern by a sequence
 of letters enclosed between "(?" and ")". The following are Perl-compatible,
 and are described in detail in the
-**pcre2api**
+`pcre2api`
 documentation. The option letters are:
 
-  i  for PCRE2_CASELESS
-  m  for PCRE2_MULTILINE
-  n  for PCRE2_NO_AUTO_CAPTURE
-  s  for PCRE2_DOTALL
-  x  for PCRE2_EXTENDED
-  xx for PCRE2_EXTENDED_MORE
-
+```text
+i  for PCRE2_CASELESS
+m  for PCRE2_MULTILINE
+n  for PCRE2_NO_AUTO_CAPTURE
+s  for PCRE2_DOTALL
+x  for PCRE2_EXTENDED
+xx for PCRE2_EXTENDED_MORE
+```
 For example, (?im) sets caseless, multiline matching. It is also possible to
 unset these options by preceding the relevant letters with a hyphen, for
 example (?-im). The two "extended" options are not independent; unsetting
@@ -1693,15 +1602,16 @@ be re-instated, but a hyphen may not appear.
 Some PCRE2-specific options can be changed by the same mechanism using these
 pairs or individual letters:
 
-  aD for PCRE2_EXTRA_ASCII_BSD
-  aS for PCRE2_EXTRA_ASCII_BSS
-  aW for PCRE2_EXTRA_ASCII_BSW
-  aP for PCRE2_EXTRA_ASCII_POSIX and PCRE2_EXTRA_ASCII_DIGIT
-  aT for PCRE2_EXTRA_ASCII_DIGIT
-  r  for PCRE2_EXTRA_CASELESS_RESTRICT
-  J  for PCRE2_DUPNAMES
-  U  for PCRE2_UNGREEDY
-
+```text
+aD for PCRE2_EXTRA_ASCII_BSD
+aS for PCRE2_EXTRA_ASCII_BSS
+aW for PCRE2_EXTRA_ASCII_BSW
+aP for PCRE2_EXTRA_ASCII_POSIX and PCRE2_EXTRA_ASCII_DIGIT
+aT for PCRE2_EXTRA_ASCII_DIGIT
+r  for PCRE2_EXTRA_CASELESS_RESTRICT
+J  for PCRE2_DUPNAMES
+U  for PCRE2_UNGREEDY
+```
 However, except for 'r', these are not unset by (?^), which is equivalent to
 (?-imnrsx). If 'a' is not followed by any of the upper case letters shown
 above, it sets (or unsets) all the ASCII options.
@@ -1717,13 +1627,15 @@ groups) affects only that part of the group that follows it. At the end of the
 group these options are reset to the state they were before the group. For
 example,
 
-  (a(?i)b)c
+```text
+(a(?i)b)c
 
 matches abc and aBc and no other strings (assuming PCRE2_CASELESS is not set
 externally). Any changes made in one alternative do carry on into subsequent
 branches within the same group. For example,
 
-  (a(?i)b|c)
+```text
+(a(?i)b|c)
 
 matches "ab", "aB", "c", and "C", even though when matching "C" the first
 branch is abandoned before the option setting. This is because the effects of
@@ -1734,12 +1646,13 @@ As a convenient shorthand, if any option settings are required at the start of
 a non-capturing group (see the next section), the option letters may
 appear between the "?" and the ":". Thus the two patterns
 
-  (?i:saturday|sunday)
-  (?:(?i)saturday|sunday)
-
+```text
+(?i:saturday|sunday)
+(?:(?i)saturday|sunday)
+```
 match exactly the same set of strings.
 
-**Note:** There are other PCRE2-specific options, applying to the whole
+`Note:` There are other PCRE2-specific options, applying to the whole
 pattern, which can be set by the application when the compiling function is
 called. In addition, the pattern can contain special leading sequences such as
 (*CRLF) to override what the application has set or what has been defaulted.
@@ -1753,7 +1666,7 @@ the PCRE2_NEVER_UTF or PCRE2_NEVER_UCP options, which lock out the use of the
 
 <a name="groups"></a>
 
-# Groups
+## Groups
 
 
 Groups are delimited by parentheses (round brackets), which can be nested.
@@ -1761,7 +1674,8 @@ Turning part of a pattern into a group does two things:
 
 1. It localizes a set of alternatives. For example, the pattern
 
-  cat(aract|erpillar|)
+```text
+cat(aract|erpillar|)
 
 matches "cataract", "caterpillar", or "cat". Without the parentheses, it would
 match "cataract", "erpillar" or an empty string.
@@ -1776,7 +1690,8 @@ Opening parentheses are counted from left to right (starting from 1) to obtain
 numbers for capture groups. For example, if the string "the red king" is
 matched against the pattern
 
-  the ((red|white) (king|queen))
+```text
+the ((red|white) (king|queen))
 
 the captured substrings are "red king", "red", and "king", and are numbered 1,
 2, and 3, respectively.
@@ -1788,7 +1703,8 @@ does not do any capturing, and is not counted when computing the number of any
 subsequent capture groups. For example, if the string "the white queen"
 is matched against the pattern
 
-  the ((?:red|white) (king|queen))
+```text
+the ((?:red|white) (king|queen))
 
 the captured substrings are "white queen" and "queen", and are numbered 1 and
 2. The maximum number of capture groups is 65535.
@@ -1797,9 +1713,10 @@ As a convenient shorthand, if any option settings are required at the start of
 a non-capturing group, the option letters may appear between the "?" and the
 ":". Thus the two patterns
 
-  (?i:saturday|sunday)
-  (?:(?i)saturday|sunday)
-
+```text
+(?i:saturday|sunday)
+(?:(?i)saturday|sunday)
+```
 match exactly the same set of strings. Because alternative branches are tried
 from left to right, and options are not reset until the end of the group is
 reached, an option setting in one branch does affect subsequent branches, so
@@ -1807,14 +1724,15 @@ the above patterns match "SUNDAY" as well as "Saturday".
 
 <a name="duplicate-group-numbers"></a>
 
-# Duplicate Group Numbers
+## Duplicate Group Numbers
 
 
 Perl 5.10 introduced a feature whereby each alternative in a group uses the
 same numbers for its capturing parentheses. Such a group starts with (?| and is
 itself a non-capturing group. For example, consider this pattern:
 
-  (?|(Sat)ur|(Sun))day
+```text
+(?|(Sat)ur|(Sun))day
 
 Because the two alternatives are inside a (?| group, both sets of capturing
 parentheses are numbered one. Thus, when the pattern matches, you can look
@@ -1826,20 +1744,23 @@ parentheses that follow the whole group start after the highest number used in
 any branch. The following example is taken from the Perl documentation. The
 numbers underneath show in which buffer the captured content will be stored.
 
-  # before  ---------------branch-reset----------- after
-  / ( a )  (?| x ( y ) z | (p (q) r) | (t) u (v) ) ( z ) /x
-  # 1            2         2  3        2     3     4
+```text
+# before  ---------------branch-reset----------- after
+/ ( a )  (?| x ( y ) z | (p (q) r) | (t) u (v) ) ( z ) /x
+- **`# 1`** - 2         2  3        2     3     4
 
 A backreference to a capture group uses the most recent value that is set for
 the group. The following pattern matches "abcabc" or "defdef":
 
-  /(?|(abc)|(def))\e1/
+```text
+/(?|(abc)|(def))\e1/
 
 In contrast, a subroutine call to a capture group always refers to the
 first one in the pattern with the given number. The following pattern matches
 "abcabc" or "defabc":
 
-  /(?|(abc)|(def))(?1)/
+```text
+/(?|(abc)|(def))(?1)/
 
 A relative reference such as (?-1) is no different: it is just a convenient way
 of computing an absolute group number.
@@ -1854,7 +1775,7 @@ duplicate named groups, as described in the next section.
 
 <a name="named-capture-groups"></a>
 
-# Named Capture Groups
+## Named Capture Groups
 
 
 Identifying capture groups by number is simple, but it can be very hard to keep
@@ -1872,9 +1793,9 @@ PCRE2_UTF is set, the syntax of group names is extended to allow any Unicode
 letter or Unicode decimal digit. In other words, group names must match one of
 these patterns:
 
-  ^[_A-Za-z][_A-Za-z0-9]*\ez   when PCRE2_UTF is not set
-  ^[_\ep{L}][_\ep{L}\ep{Nd}]*\ez  when PCRE2_UTF is set
-
+- **`^[_A-Za-z][_A-Za-z0-9]*\ez`** - when PCRE2_UTF is not set
+^[_\ep{L}][_\ep{L}\ep{Nd}]*\ez  when PCRE2_UTF is set
+```
 References to capture groups from other parts of the pattern, such as
 backreferences,
 recursion,
@@ -1889,12 +1810,13 @@ numbers. The PCRE2 API provides function calls for extracting the complete
 name-to-number translation table from a compiled pattern, as well as
 convenience functions for extracting captured substrings by name.
 
-**Warning:** When more than one capture group has the same number, as
+`Warning:` When more than one capture group has the same number, as
 described in the previous section, a name given to one of them applies to all
 of them. Perl allows identically numbered groups to have different names.
 Consider this pattern, where there are two capture groups, both numbered 1:
 
-  (?|(?&lt;AA&gt;aa)|(?&lt;BB&gt;bb))
+```text
+(?|(?&lt;AA&gt;aa)|(?&lt;BB&gt;bb))
 
 Perl allows this, with both names AA and BB as aliases of group 1. Thus, after
 a successful match, both names yield the same value (either "aa" or "bb").
@@ -1904,7 +1826,8 @@ to be associated with more than one name. The example above provokes a
 compile-time error. However, there is still scope for confusion. Consider this
 pattern:
 
-  (?|(?&lt;AA&gt;aa)|(bb))
+```text
+(?|(?&lt;AA&gt;aa)|(bb))
 
 Although the second group number 1 is not explicitly named, the name AA is
 still an alias for any group 1. Whether the pattern matches "aa" or "bb", a
@@ -1913,7 +1836,8 @@ reference by name to group AA yields the matched string.
 By default, a name must be unique within a pattern, except that duplicate names
 are permitted for groups with the same number, for example:
 
-  (?|(?&lt;AA&gt;aa)|(?&lt;AA&gt;bb))
+```text
+(?|(?&lt;AA&gt;aa)|(?&lt;AA&gt;bb))
 
 The duplicate name constraint can be disabled by setting the PCRE2_DUPNAMES
 option at compile time, or by the use of (?J) within the pattern, as described
@@ -1927,13 +1851,14 @@ either as a 3-letter abbreviation or as the full name, and in both cases you
 want to extract the abbreviation. This pattern (ignoring the line breaks) does
 the job:
 
-  (?J)
-  (?&lt;DN&gt;Mon|Fri|Sun)(?:day)?|
-  (?&lt;DN&gt;Tue)(?:sday)?|
-  (?&lt;DN&gt;Wed)(?:nesday)?|
-  (?&lt;DN&gt;Thu)(?:rsday)?|
-  (?&lt;DN&gt;Sat)(?:urday)?
-
+```text
+(?J)
+(?&lt;DN&gt;Mon|Fri|Sun)(?:day)?|
+(?&lt;DN&gt;Tue)(?:sday)?|
+(?&lt;DN&gt;Wed)(?:nesday)?|
+(?&lt;DN&gt;Thu)(?:rsday)?|
+(?&lt;DN&gt;Sat)(?:urday)?
+```
 There are five capture groups, but only one is ever set after a match. The
 convenience functions for extracting the data by name returns the substring for
 the first (and in this example, the only) group of that name that matched. This
@@ -1947,7 +1872,8 @@ they appear in the overall pattern. The first one that is set is used for the
 reference. For example, this pattern matches both "foofoo" and "barbar" but not
 "foobar" or "barfoo":
 
-  (?J)(?:(?&lt;n&gt;foo)|(?&lt;n&gt;bar))\ek&lt;n&gt;
+```text
+(?J)(?:(?&lt;n&gt;foo)|(?&lt;n&gt;bar))\ek&lt;n&gt;
 
 
 If you make a subroutine call to a non-unique named group, the one that
@@ -1962,51 +1888,56 @@ recursion, all groups with the same name are tested. If the condition is true
 for any one of them, the overall condition is true. This is the same behaviour
 as testing by number. For further details of the interfaces for handling named
 capture groups, see the
-**pcre2api**
+`pcre2api`
 documentation.
 
 <a name="repetition"></a>
 
-# Repetition
+## Repetition
 
 
 Repetition is specified by quantifiers, which may follow any one of these
 items:
 
-  a literal data character
-  the dot metacharacter
-  the \eC escape sequence
-  the \eR escape sequence
-  the \eX escape sequence
-  any escape sequence that matches a single character
-  a character class
-  a backreference
-  a parenthesized group (including lookaround assertions)
-  a subroutine call (recursive or otherwise)
-
+```text
+a literal data character
+the dot metacharacter
+the \eC escape sequence
+the \eR escape sequence
+the \eX escape sequence
+any escape sequence that matches a single character
+a character class
+a backreference
+a parenthesized group (including lookaround assertions)
+a subroutine call (recursive or otherwise)
+```
 If a quantifier does not follow a repeatable item, an error occurs. The
 general repetition quantifier specifies a minimum and maximum number of
 permitted matches by giving two numbers in curly brackets (braces), separated
 by a comma. The numbers must be less than 65536, and the first must be less
 than or equal to the second. For example,
 
-  z{2,4}
+```text
+z{2,4}
 
 matches "zz", "zzz", or "zzzz". A closing brace on its own is not a special
 character. If the second number is omitted, but the comma is present, there is
 no upper limit; if the second number and the comma are both omitted, the
 quantifier specifies an exact number of required matches. Thus
 
-  [aeiou]{3,}
+```text
+[aeiou]{3,}
 
 matches at least 3 successive vowels, but may match many more, whereas
 
-  \ed{8}
+```text
+\ed{8}
 
 matches exactly 8 digits. If the first number is omitted, the lower limit is
 taken as zero; in this case the upper limit must be present.
 
-  X{,4} is interpreted as X{0,4}
+```text
+X{,4} is interpreted as X{0,4}
 
 This is a change in behaviour that happened in Perl 5.34.0 and PCRE2 10.43. In
 earlier versions such a sequence was not interpreted as a quantifier. Other
@@ -2037,14 +1968,15 @@ omitted from the compiled pattern.
 For convenience, the three most common quantifiers have single-character
 abbreviations:
 
-  *    is equivalent to {0,}
-  +    is equivalent to {1,}
-  ?    is equivalent to {0,1}
+- **`*`** - is equivalent to {0,}
+- **`+`** - is equivalent to {1,}
+- **`?`** - is equivalent to {0,1}
 
 It is possible to construct infinite loops by following a group that can match
 no characters with a quantifier that has no upper limit, for example:
 
-  (a?)*
+```text
+(a?)*
 
 Earlier versions of Perl and PCRE1 used to give an error at compile time for
 such patterns. However, because there are cases where this can be useful, such
@@ -2060,25 +1992,29 @@ trying to match comments in C programs. These appear between /* and */ and
 within the comment, individual * and / characters may appear. An attempt to
 match C comments by applying the pattern
 
-  /\e*.*\e*/
+```text
+/\e*.*\e*/
 
 to the string
 
-  /* first comment */  not comment  /* second comment */
+```text
+/* first comment */  not comment  /* second comment */
 
 fails, because it matches the entire string owing to the greediness of the .*
 item. However, if a quantifier is followed by a question mark, it ceases to be
 greedy, and instead matches the minimum number of times possible, so the
 pattern
 
-  /\e*.*?\e*/
+```text
+/\e*.*?\e*/
 
 does the right thing with C comments. The meaning of the various quantifiers is
 not otherwise changed, just the preferred number of matches. Do not confuse
 this use of question mark with its use as a quantifier in its own right.
 Because it has two uses, it can sometimes appear doubled, as in
 
-  \ed??\ed
+```text
+\ed??\ed
 
 which matches one digit by preference, but can match two if that is the only
 way the rest of the pattern matches.
@@ -2108,7 +2044,8 @@ is inside capturing parentheses that are the subject of a backreference
 elsewhere in the pattern, a match at the start may fail where a later one
 succeeds. Consider, for example:
 
-  (.*)abc\e1
+```text
+(.*)abc\e1
 
 If the subject is "xyz123abc123" the match point is the fourth character. For
 this reason, such a pattern is not implicitly anchored.
@@ -2117,29 +2054,32 @@ Another case where implicit anchoring is not applied is when the leading .* is
 inside an atomic group. Once again, a match at the start may fail where a later
 one succeeds. Consider this pattern:
 
-  (?&gt;.*?a)b
+```text
+(?&gt;.*?a)b
 
 It matches "ab" in the subject "aab". The use of the backtracking control verbs
 (*PRUNE) and (*SKIP) also disable this optimization. To do so explicitly,
 either pass the compile option PCRE2_NO_DOTSTAR_ANCHOR, or call
-**pcre2\_set\_optimize()** with a PCRE2_DOTSTAR_ANCHOR_OFF directive.
+`pcre2\_set\_optimize()` with a PCRE2_DOTSTAR_ANCHOR_OFF directive.
 
 When a capture group is repeated, the value captured is the substring that
 matched the final iteration. For example, after
 
-  (tweedle[dume]{3}\es*)+
+```text
+(tweedle[dume]{3}\es*)+
 
 has matched "tweedledum tweedledee" the value of the captured substring is
 "tweedledee". However, if there are nested capture groups, the corresponding
 captured values may have been set in previous iterations. For example, after
 
-  (a|(b))+
+```text
+(a|(b))+
 
 matches "aba" the value of the second captured substring is "b".
 
 <a name="atomic-grouping-and-possessive-quantifiers"></a>
 
-# Atomic Grouping and Possessive Quantifiers
+## Atomic Grouping and Possessive Quantifiers
 
 
 With both maximizing ("greedy") and minimizing ("ungreedy" or "lazy")
@@ -2151,7 +2091,8 @@ the author of the pattern knows there is no point in carrying on.
 
 Consider, for example, the pattern \ed+foo when applied to the subject line
 
-  123456bar
+```text
+123456bar
 
 After matching all 6 digits and then failing to match "foo", the normal
 action of the matcher is to try again with only 5 digits matching the \ed+
@@ -2163,12 +2104,14 @@ If we use atomic grouping for the previous example, the matcher gives up
 immediately on failing to match "foo" the first time. The notation is a kind of
 special parenthesis, starting with (?&gt; as in this example:
 
-  (?&gt;\ed+)foo
+```text
+(?&gt;\ed+)foo
 
 Perl 5.28 introduced an experimental alphabetic form starting with (* which may
 be easier to remember:
 
-  (*atomic:\ed+)foo
+```text
+(*atomic:\ed+)foo
 
 This kind of parenthesized group "locks up" the part of the pattern it contains
 once it has matched, and a failure further into the pattern is prevented from
@@ -2192,12 +2135,14 @@ notation, called a "possessive quantifier" can be used. This consists of an
 additional + character following a quantifier. Using this notation, the
 previous example can be rewritten as
 
-  \ed++foo
+```text
+\ed++foo
 
 Note that a possessive quantifier can be used with an entire group, for
 example:
 
-  (abc|xyz){2,3}+
+```text
+(abc|xyz){2,3}+
 
 Possessive quantifiers are always greedy; the setting of the PCRE2_UNGREEDY
 option is ignored. They are a convenient notation for the simpler forms of
@@ -2215,20 +2160,22 @@ PCRE2 has an optimization that automatically "possessifies" certain simple
 pattern constructs. For example, the sequence A+B is treated as A++B because
 there is no point in backtracking into a sequence of A's when B must follow.
 This feature can be disabled by the PCRE2_NO_AUTO_POSSESS option, by calling
-**pcre2\_set\_optimize()** with a PCRE2_AUTO_POSSESS_OFF directive, or by
+`pcre2\_set\_optimize()` with a PCRE2_AUTO_POSSESS_OFF directive, or by
 starting the pattern with (*NO_AUTO_POSSESS).
 
 When a pattern contains an unlimited repeat inside a group that can itself be
 repeated an unlimited number of times, the use of an atomic group is the only
 way to avoid some failing matches taking a very long time indeed. The pattern
 
-  (\eD+|&lt;\ed+&gt;)*[!?]
+```text
+(\eD+|&lt;\ed+&gt;)*[!?]
 
 matches an unlimited number of substrings that either consist of non-digits, or
 digits enclosed in &lt;&gt;, followed by either ! or ?. When it matches, it runs
 quickly. However, if it is applied to
 
-  aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+```text
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 
 it takes a long time before reporting failure. This is because the string can
 be divided between the internal \eD+ repeat and the external * repeat in a
@@ -2239,13 +2186,14 @@ remember the last single character that is required for a match, and fail early
 if it is not present in the string.) If the pattern is changed so that it uses
 an atomic group, like this:
 
-  ((?&gt;\eD+)|&lt;\ed+&gt;)*[!?]
+```text
+((?&gt;\eD+)|&lt;\ed+&gt;)*[!?]
 
 sequences of non-digits cannot be broken, and failure happens quickly.
 
 <a name="backreferences"></a>
 
-# Backreferences
+## Backreferences
 
 
 Outside a character class, a backslash followed by a digit greater than 0 (and
@@ -2274,15 +2222,17 @@ backslash is to use the \eg escape sequence. This escape must be followed by a
 signed or unsigned number, optionally enclosed in braces. These examples are
 all identical:
 
-  (ring), \e1
-  (ring), \eg1
-  (ring), \eg{1}
-
+```text
+(ring), \e1
+(ring), \eg1
+(ring), \eg{1}
+```
 An unsigned number specifies an absolute reference without the ambiguity that
 is present in the older syntax. It is also useful when literal digits follow
 the reference. A signed number is a relative reference. Consider this example:
 
-  (abc(def)ghi)\eg{-1}
+```text
+(abc(def)ghi)\eg{-1}
 
 The sequence \eg{-1} is a reference to the capture group whose number is one
 less than the number of the next group to be started, so in this example (where
@@ -2291,7 +2241,8 @@ be equivalent to \e1. Note that if this construct is inside a capture group,
 that group is included in the count, so in this example \eg{-2} also refers to
 group 1:
 
-  (A)(\eg{-2}B)
+```text
+(A)(\eg{-2}B)
 
 The use of relative references can be helpful in long patterns, and also in
 patterns that are created by joining together fragments that contain references
@@ -2308,13 +2259,15 @@ the group (see
 "Groups as subroutines"
 below for a way of doing that). So the pattern
 
-  (sens|respons)e and \e1ibility
+```text
+(sens|respons)e and \e1ibility
 
 matches "sense and sensibility" and "response and responsibility", but not
 "sense and responsibility". If caseful matching is in force at the time of the
 backreference, the case of letters is relevant. For example,
 
-  ((?i)rah)\es+\e1
+```text
+((?i)rah)\es+\e1
 
 matches "rah rah" and "RAH RAH", but not "RAH rah", even though the original
 capture group is matched caselessly.
@@ -2326,11 +2279,12 @@ by both Perl and PCRE2. Perl 5.10's unified backreference syntax, in which \eg
 can be used for both numeric and named references, is also supported by PCRE2.
 We could rewrite the above example in any of the following ways:
 
-  (?&lt;p1&gt;(?i)rah)\es+\ek&lt;p1&gt;
-  (?'p1'(?i)rah)\es+\ek{p1}
-  (?P&lt;p1&gt;(?i)rah)\es+(?P=p1)
-  (?&lt;p1&gt;(?i)rah)\es+\eg{p1}
-
+```text
+(?&lt;p1&gt;(?i)rah)\es+\ek&lt;p1&gt;
+(?'p1'(?i)rah)\es+\ek{p1}
+(?P&lt;p1&gt;(?i)rah)\es+(?P=p1)
+(?&lt;p1&gt;(?i)rah)\es+\eg{p1}
+```
 A capture group that is referenced by name may appear in the pattern before or
 after the reference.
 
@@ -2338,7 +2292,8 @@ There may be more than one backreference to the same group. If a group has not
 actually been used in a particular match, backreferences to it always fail by
 default. For example, the pattern
 
-  (a|(bc))\e2
+```text
+(a|(bc))\e2
 
 always fails if it starts to match "a" rather than "bc". However, if the
 PCRE2_MATCH_UNSET_BACKREF option is set at compile time, a backreference to an
@@ -2354,14 +2309,15 @@ below) can be used.
 
 <a name="recursive-backreferences"></a>
 
-### Recursive backreferences
+_Recursive backreferences_
 
 
 A backreference that occurs inside the group to which it refers fails when the
 group is first used, so, for example, (a\e1) never matches. However, such
 references can be useful inside repeated groups. For example, the pattern
 
-  (a|b\e1)+
+```text
+(a|b\e1)+
 
 matches any number of "a"s and also "aba", "ababbaa" etc. At each iteration of
 the group, the backreference matches the character string corresponding to the
@@ -2378,7 +2334,7 @@ as normal.
 
 <a name="assertions"></a>
 
-# Assertions
+## Assertions
 
 
 An assertion is a test that does not consume any characters. The test must
@@ -2447,7 +2403,7 @@ example, {3,} is treated as {3,4}.
 
 <a name="alphabetic-assertion-names"></a>
 
-### Alphabetic assertion names
+_Alphabetic assertion names_
 
 
 Traditionally, symbolic sequences such as (?= and (?&lt;= have been used to
@@ -2456,34 +2412,38 @@ alphabetic alternatives which might be easier to remember. They all start with
 (* instead of (? and must be written using lower case letters. PCRE2 supports
 the following synonyms:
 
-  (*positive_lookahead:  or (*pla: is the same as (?=
-  (*negative_lookahead:  or (*nla: is the same as (?!
-  (*positive_lookbehind: or (*plb: is the same as (?&lt;=
-  (*negative_lookbehind: or (*nlb: is the same as (?&lt;!
-
+```text
+(*positive_lookahead:  or (*pla: is the same as (?=
+(*negative_lookahead:  or (*nla: is the same as (?!
+(*positive_lookbehind: or (*plb: is the same as (?&lt;=
+(*negative_lookbehind: or (*nlb: is the same as (?&lt;!
+```
 For example, (*pla:foo) is the same assertion as (?=foo). In the following
 sections, the various assertions are described using the original symbolic
 forms.
 
 <a name="lookahead-assertions"></a>
 
-### Lookahead assertions
+_Lookahead assertions_
 
 
 Lookahead assertions start with (?= for positive assertions and (?! for
 negative assertions. For example,
 
-  \ew+(?=;)
+```text
+\ew+(?=;)
 
 matches a word followed by a semicolon, but does not include the semicolon in
 the match, and
 
-  foo(?!bar)
+```text
+foo(?!bar)
 
 matches any occurrence of "foo" that is not followed by "bar". Note that the
 apparently similar pattern
 
-  (?!foo)bar
+```text
+(?!foo)bar
 
 does not find an occurrence of "bar" that is preceded by something other than
 "foo"; it finds any occurrence of "bar" whatsoever, because the assertion
@@ -2497,13 +2457,14 @@ The backtracking control verb (*FAIL) or (*F) is a synonym for (?!).
 
 <a name="lookbehind-assertions"></a>
 
-### Lookbehind assertions
+_Lookbehind assertions_
 
 
 Lookbehind assertions start with (?&lt;= for positive assertions and (?&lt;! for
 negative assertions. For example,
 
-  (?&lt;!foo)bar
+```text
+(?&lt;!foo)bar
 
 does find an occurrence of "bar" that is not preceded by "foo". The contents of
 a lookbehind assertion are restricted such that there must be a known maximum
@@ -2511,18 +2472,20 @@ to the lengths of all the strings it matches. There are two cases:
 
 If every top-level alternative matches a fixed length, for example
 
-  (?&lt;=colour|color)
+```text
+(?&lt;=colour|color)
 
 there is a limit of 65535 characters to the lengths, which do not have to be
 the same, as this example demonstrates. This is the only kind of lookbehind
 supported by PCRE2 versions earlier than 10.43 and by the alternative matching
-function **pcre2\_dfa\_match()**.
+function `pcre2\_dfa\_match()`.
 
-In PCRE2 10.43 and later, **pcre2\_match()** supports lookbehind assertions in
+In PCRE2 10.43 and later, `pcre2\_match()` supports lookbehind assertions in
 which one or more top-level alternatives can match more than one string length,
 for example
 
-  (?&lt;=colou?r)
+```text
+(?&lt;=colou?r)
 
 The maximum matching length for any branch of the lookbehind is limited to a
 value set by the calling program (default 255 characters). Unlimited repetition
@@ -2558,13 +2521,15 @@ Possessive quantifiers can be used in conjunction with lookbehind assertions to
 specify efficient matching at the end of subject strings. Consider a simple
 pattern such as
 
-  abcd$
+```text
+abcd$
 
 when applied to a long string that does not match. Because matching proceeds
 from left to right, PCRE2 will look for each "a" in the subject and then see if
 what follows matches the rest of the pattern. If the pattern is specified as
 
-  ^.*abcd$
+```text
+^.*abcd$
 
 the initial .* matches the entire string at first, but when this fails (because
 there is no following "a"), it backtracks to match all but the last character,
@@ -2572,7 +2537,8 @@ then all but the last two characters, and so on. Once again the search for "a"
 covers the entire string, from right to left, so we are no better off. However,
 if the pattern is written as
 
-  ^.*+(?&lt;=abcd)
+```text
+^.*+(?&lt;=abcd)
 
 there can be no backtracking for the .*+ item because of the possessive
 quantifier; it can match only the entire string. The subsequent lookbehind
@@ -2582,12 +2548,13 @@ difference to the processing time.
 
 <a name="using-multiple-assertions"></a>
 
-### Using multiple assertions
+_Using multiple assertions_
 
 
 Several assertions (of any sort) may occur in succession. For example,
 
-  (?&lt;=\ed{3})(?&lt;!999)foo
+```text
+(?&lt;=\ed{3})(?&lt;!999)foo
 
 matches "foo" preceded by three digits that are not "999". Notice that each of
 the assertions is applied independently at the same point in the subject
@@ -2597,7 +2564,8 @@ This pattern does _not_ match "foo" preceded by six characters, the first
 of which are digits and the last three of which are not "999". For example, it
 doesn't match "123abcfoo". A pattern to do that is
 
-  (?&lt;=\ed{3}...)(?&lt;!999)foo
+```text
+(?&lt;=\ed{3}...)(?&lt;!999)foo
 
 This time the first assertion looks at the preceding six characters, checking
 that the first three are digits, and then the second assertion checks that the
@@ -2605,19 +2573,21 @@ preceding three characters are not "999".
 
 Assertions can be nested in any combination. For example,
 
-  (?&lt;=(?&lt;!foo)bar)baz
+```text
+(?&lt;=(?&lt;!foo)bar)baz
 
 matches an occurrence of "baz" that is preceded by "bar" which in turn is not
 preceded by "foo", while
 
-  (?&lt;=\ed{3}(?!999)...)foo
+```text
+(?&lt;=\ed{3}(?!999)...)foo
 
 is another pattern that matches "foo" preceded by three digits and any three
 characters that are not "999".
 
 <a name="non-atomic-assertions"></a>
 
-# Non-Atomic Assertions
+## Non-Atomic Assertions
 
 
 Traditional lookaround assertions are atomic. That is, if an assertion is true,
@@ -2625,14 +2595,16 @@ but there is a subsequent matching failure, there is no backtracking into the
 assertion. However, there are some cases where non-atomic positive assertions
 can be useful. PCRE2 provides these using the following syntax:
 
-  (*non_atomic_positive_lookahead:  or (*napla: or (?*
-  (*non_atomic_positive_lookbehind: or (*naplb: or (?&lt;*
-
+```text
+(*non_atomic_positive_lookahead:  or (*napla: or (?*
+(*non_atomic_positive_lookbehind: or (*naplb: or (?&lt;*
+```
 Consider the problem of finding the right-most word in a string that also
 appears earlier in the string, that is, it must appear at least twice in total.
 This pattern returns the required result as captured substring 1:
 
-  ^(?x)(*napla: .* \eb(\ew++)) (?&gt; .*? \eb\e1\eb ){2}
+```text
+^(?x)(*napla: .* \eb(\ew++)) (?&gt; .*? \eb\e1\eb ){2}
 
 For a subject such as "word1 word2 word3 word2 word3 word4" the result is
 "word3". How does it work? At the start, ^(?x) anchors the pattern and sets the
@@ -2667,7 +2639,7 @@ There is one exception to backtracking into a non-atomic assertion. If an
 is, a subsequent match failure cannot backtrack into the assertion.
 
 Non-atomic assertions are not supported by the alternative matching function
-**pcre2\_dfa\_match()**. They are supported by JIT, but only if they do not
+`pcre2\_dfa\_match()`. They are supported by JIT, but only if they do not
 contain any control verbs such as (*ACCEPT). (This may change in future). Note
 that assertions that appear as conditions for
 conditional groups
@@ -2675,13 +2647,13 @@ conditional groups
 
 <a name="scan-substring-assertions"></a>
 
-# Scan Substring Assertions
+## Scan Substring Assertions
 
 
 A special kind of assertion, not compatible with Perl, makes it possible to
 check the contents of a captured substring by matching it with a subpattern.
 Because this involves capturing, this feature is not supported by
-**pcre2\_dfa\_match()**.
+`pcre2\_dfa\_match()`.
 
 A scan substring assertion starts with the sequence (*scan_substring: or
 (*scs: which is followed by a list of substring numbers (absolute or relative)
@@ -2689,11 +2661,12 @@ and/or substring names enclosed in single quotes or angle brackets, all within
 parentheses. The rest of the item is the subpattern that is applied to the
 substring, as shown in these examples:
 
-  (*scan_substring:(1)...)
-  (*scs:(-2)...)
-  (*scs:('AB')...)
-  (*scs:(1,'AB',-2)...)
-
+```text
+(*scan_substring:(1)...)
+(*scs:(-2)...)
+(*scs:('AB')...)
+(*scs:(1,'AB',-2)...)
+```
 The list of groups is checked in the order they are given, and it is the
 contents of the first one that is found to be set that are scanned. When
 PCRE2_DUPNAMES is set and there are ambiguous group names, all groups with the
@@ -2711,13 +2684,15 @@ assertions into what precedes the substring are possible.
 Here is a very simple example: find a word that contains the rare (in English)
 sequence of letters "rh" not at the start:
 
-  \eb(\ew++)(*scs:(1).+rh)
+```text
+\eb(\ew++)(*scs:(1).+rh)
 
 The first group captures a word which is then scanned by the second group.
 This example does not actually need this heavyweight feature; the same match
 can be achieved with:
 
-  \eb\ew+?rh\ew*\eb
+```text
+\eb\ew+?rh\ew*\eb
 
 When things are more complicated, however, scanning a captured substring can be
 a useful way to describe the required match. For exmple, there is a rather
@@ -2726,7 +2701,8 @@ for a palindrome, that is, the sequence of letters is the same in both
 directions. Suppose you want to search for individual words of two or more
 characters such as "level" that are palindromes:
 
-  (\eb\ew{2,}+\eb)(*scs:(1)...palindrome-matching-pattern...)
+```text
+(\eb\ew{2,}+\eb)(*scs:(1)...palindrome-matching-pattern...)
 
 Within a substring scanning subpattern, references to other groups work as
 normal. Capturing groups may appear, and will retain their values during
@@ -2734,7 +2710,7 @@ ongoing matching if the assertion succeeds.
 
 <a name="script-runs"></a>
 
-# Script Runs
+## Script Runs
 
 
 In concept, a script run is a sequence of characters that are all from the same
@@ -2744,7 +2720,7 @@ with multiple scripts, it is not that simple. There is a full description of
 the rules that PCRE2 uses in the section entitled
 "Script Runs"
 in the
-**pcre2unicode**
+`pcre2unicode`
 documentation.
 
 If part of a pattern is enclosed between (*script_run: or (*sr: and a closing
@@ -2756,19 +2732,22 @@ the letters could be a mixture of Latin and Cyrillic. This pattern ensures that
 the matched characters in a sequence of non-spaces that follow white space are
 a script run:
 
-  \es+(*sr:\eS+)
+```text
+\es+(*sr:\eS+)
 
 To be sure that they are all from the Latin script (for example), a lookahead
 can be used:
 
-  \es+(?=\ep{Latin})(*sr:\eS+)
+```text
+\es+(?=\ep{Latin})(*sr:\eS+)
 
 This works as long as the first character is expected to be a character in that
 script, and not (for example) punctuation, which is allowed with any script. If
 this is not the case, a more creative lookahead is needed. For example, if
 digits, underscore, and dots are permitted at the start:
 
-  \es+(?=[0-9_.]*\ep{Latin})(*sr:\eS+)
+```text
+\es+(?=[0-9_.]*\ep{Latin})(*sr:\eS+)
 
 
 In many cases, backtracking into a script run pattern fragment is not
@@ -2776,7 +2755,8 @@ desirable. The script run can employ an atomic group to prevent this. Because
 this is a common requirement, a shorthand notation is provided by
 (*atomic_script_run: or (*asr:
 
-  (*asr:...) is the same as (*sr:(?&gt;...))
+```text
+(*asr:...) is the same as (*sr:(?&gt;...))
 
 Note that the atomic group is inside the script run. Putting it outside would
 not prevent backtracking into the script run pattern.
@@ -2784,17 +2764,17 @@ not prevent backtracking into the script run pattern.
 Support for script runs is not available if PCRE2 is compiled without Unicode
 support. A compile-time error is given if any of the above constructs is
 encountered. Script runs are not supported by the alternate matching function,
-**pcre2\_dfa\_match()** because they use the same mechanism as capturing
+`pcre2\_dfa\_match()` because they use the same mechanism as capturing
 parentheses.
 
-**Warning:** The (*ACCEPT) control verb
+`Warning:` The (*ACCEPT) control verb
 (see below)
 should not be used within a script run group, because it causes an immediate
 exit from the group, bypassing the script run checking.
 
 <a name="conditional-groups"></a>
 
-# Conditional Groups
+## Conditional Groups
 
 
 It is possible to cause the matching process to obey a pattern fragment
@@ -2802,9 +2782,10 @@ conditionally or to choose between two alternative fragments, depending on
 the result of an assertion, or whether a specific capture group has
 already been matched. The two possible forms of conditional group are:
 
-  (?(condition)yes-pattern)
-  (?(condition)yes-pattern|no-pattern)
-
+```text
+(?(condition)yes-pattern)
+(?(condition)yes-pattern|no-pattern)
+```
 If the condition is satisfied, the yes-pattern is used; otherwise the
 no-pattern (if present) is used. An absent no-pattern is equivalent to an empty
 string (it always matches). If there are more than two alternatives in the
@@ -2813,7 +2794,8 @@ contain nested groups of any form, including conditional groups; the
 restriction to two alternatives applies only at the level of the condition
 itself. This pattern fragment is an example where the alternatives are complex:
 
-  (?(1) (A|B|C) | (D | (?(2)E|F) | E) )
+```text
+(?(1) (A|B|C) | (D | (?(2)E|F) | E) )
 
 
 There are five kinds of condition: references to capture groups, references to
@@ -2821,7 +2803,7 @@ recursion, two pseudo-conditions called DEFINE and VERSION, and assertions.
 
 <a name="checking-for-a-used-capture-group-by-number"></a>
 
-### Checking for a used capture group by number
+_Checking for a used capture group by number_
 
 
 If the text between the parentheses consists of a sequence of digits, the
@@ -2841,7 +2823,7 @@ Consider the following pattern, which contains non-significant white space to
 make it more readable (assume the PCRE2_EXTENDED option) and to divide it into
 three parts for ease of discussion:
 
-  ( \e( )?    [^()]+    (?(1) \e) )
+- **`( \e( )?`** - [^()]+    (?(1) \e) )
 
 The first part matches an optional opening parenthesis, and if that
 character is present, sets it as the first captured substring. The second part
@@ -2856,13 +2838,13 @@ sequence of non-parentheses, optionally enclosed in parentheses.
 If you were embedding this pattern in a larger one, you could use a relative
 reference:
 
-  ...other stuff... ( \e( )?    [^()]+    (?(-1) \e) ) ...
+- **`...other stuff... ( \e( )?`** - [^()]+    (?(-1) \e) ) ...
 
 This makes the fragment independent of the parentheses in the larger pattern.
 
 <a name="checking-for-a-used-capture-group-by-name"></a>
 
-### Checking for a used capture group by name
+_Checking for a used capture group by name_
 
 
 Perl uses the syntax (?(&lt;name&gt;)...) or (?('name')...) to test for a used
@@ -2872,7 +2854,7 @@ Note, however, that undelimited names consisting of the letter R followed by
 digits are ambiguous (see the following section). Rewriting the above example
 to use a named group gives this:
 
-  (?&lt;OPEN&gt; \e( )?    [^()]+    (?(&lt;OPEN&gt;) \e) )
+- **`(?&lt;OPEN&gt; \e( )?`** - [^()]+    (?(&lt;OPEN&gt;) \e) )
 
 If the name used in a condition of this kind is a duplicate, the test is
 applied to all groups of the same name, and is true if any one of them has
@@ -2880,7 +2862,7 @@ matched.
 
 <a name="checking-for-pattern-recursion"></a>
 
-### Checking for pattern recursion
+_Checking for pattern recursion_
 
 
 "Recursion" in this sense refers to any subroutine-like call from one part of
@@ -2898,7 +2880,8 @@ and there is no group with that name, the condition is true if the most recent
 call is into a group with the given number, which must exist somewhere in the
 overall pattern. This is a contrived example that is equivalent to a+b:
 
-  ((?(R1)a+|(?1)b))
+```text
+((?(R1)a+|(?1)b))
 
 However, in both cases, if there is a capture group with a matching name, the
 condition tests for its being set, as described in the section above, instead
@@ -2907,7 +2890,8 @@ adding (?&lt;R1&gt;) to the above pattern completely changes its meaning.
 
 If a name preceded by ampersand follows the letter R, for example:
 
-  (?(R&name)...)
+```text
+(?(R&name)...)
 
 the condition is true if the most recent recursion is into a group of that name
 (which must exist within the pattern).
@@ -2921,7 +2905,7 @@ At "top level", all these recursion test conditions are false.
 
 <a name="defining-capture-groups-for-use-by-reference-only"></a>
 
-### Defining capture groups for use by reference only
+_Defining capture groups for use by reference only_
 
 
 If the condition is the string (DEFINE), the condition is always false, even if
@@ -2934,9 +2918,10 @@ is described below.) For example, a pattern to match an IPv4 address such as
 "192.168.23.245" could be written like this (ignore white space and line
 breaks):
 
-  (?(DEFINE) (?&lt;byte&gt; 2[0-4]\ed | 25[0-5] | 1\ed\ed | [1-9]?\ed) )
-  \eb (?&byte) (\e.(?&byte)){3} \eb
-
+```text
+(?(DEFINE) (?&lt;byte&gt; 2[0-4]\ed | 25[0-5] | 1\ed\ed | [1-9]?\ed) )
+\eb (?&byte) (\e.(?&byte)){3} \eb
+```
 The first part of the pattern is a DEFINE group inside which another group
 named "byte" is defined. This matches an individual component of an IPv4
 address (a number less than 256). When matching takes place, this part of the
@@ -2946,18 +2931,19 @@ components of an IPv4 address, insisting on a word boundary at each end.
 
 <a name="checking-the-pcre2-version"></a>
 
-### Checking the PCRE2 version
+_Checking the PCRE2 version_
 
 
 Programs that link with a PCRE2 library can check the version by calling
-**pcre2\_config()** with appropriate arguments. Users of applications that do
+`pcre2\_config()` with appropriate arguments. Users of applications that do
 not have access to the underlying code cannot do this. A special "condition"
 called VERSION exists to allow such users to discover which version of PCRE2
 they are dealing with by using this condition to match a string such as
 "yesno". VERSION must be followed either by "=" or "&gt;=" and a version number.
 For example:
 
-  (?(VERSION&gt;=10.4)yes|no)
+```text
+(?(VERSION&gt;=10.4)yes|no)
 
 This pattern matches "yes" if the PCRE2 version is greater or equal to 10.4, or
 "no" otherwise. The fractional part of the version number may not contain more
@@ -2965,7 +2951,7 @@ than two digits.
 
 <a name="assertion-conditions"></a>
 
-### Assertion conditions
+_Assertion conditions_
 
 
 If the condition is not in any of the above formats, it must be a parenthesized
@@ -2976,9 +2962,10 @@ non-atomic assertions.
 Consider this pattern, again containing non-significant white space, and with
 the two alternatives on the second line:
 
-  (?(?=[^a-z]*[a-z])
-  \ed{2}-[a-z]{3}-\ed{2}  |  \ed{2}-\ed{2}-\ed{2} )
-
+```text
+(?(?=[^a-z]*[a-z])
+\ed{2}-[a-z]{3}-\ed{2}  |  \ed{2}-\ed{2}-\ed{2} )
+```
 The condition is a positive lookahead assertion that matches an optional
 sequence of non-letters followed by a letter. In other words, it tests for the
 presence of at least one letter in the subject. If a letter is found, the
@@ -2994,7 +2981,7 @@ for which captures are retained only for positive assertions that succeed.)
 
 <a name="comments"></a>
 
-# Comments
+## Comments
 
 
 There are two ways of including comments in patterns that are processed by
@@ -3017,16 +3004,17 @@ in the pattern; escape sequences that happen to represent a newline do not
 count. For example, consider this pattern when PCRE2_EXTENDED is set, and the
 default newline convention (a single linefeed character) is in force:
 
-  abc #comment \en still comment
+```text
+abc #comment \en still comment
 
-On encountering the # character, **pcre2\_compile()** skips along, looking for
+On encountering the # character, `pcre2\_compile()` skips along, looking for
 a newline in the pattern. The sequence \en is still literal at this stage, so
 it does not terminate the comment. Only an actual character with the code value
 0x0a (the default newline) does so.
 
 <a name="recursive-patterns"></a>
 
-# Recursive Patterns
+## Recursive Patterns
 
 
 Consider the problem of matching a string in parentheses, allowing for
@@ -3040,7 +3028,8 @@ expression at run time, and the code can refer to the expression itself. A Perl
 pattern using code interpolation to solve the parentheses problem can be
 created like this:
 
-  $re = qr{\e( (?: (?&gt;[^()]+) | (?p{$re}) )* \e)}x;
+```text
+$re = qr{\e( (?: (?&gt;[^()]+) | (?p{$re}) )* \e)}x;
 
 The (?p{...}) item interpolates Perl code at run time, and in this case refers
 recursively to the pattern in which it appears.
@@ -3060,7 +3049,8 @@ a recursive call of the entire regular expression.
 This PCRE2 pattern solves the nested parentheses problem (assume the
 PCRE2_EXTENDED option is set so that white space is ignored):
 
-  \e( ( [^()]++ | (?R) )* \e)
+```text
+\e( ( [^()]++ | (?R) )* \e)
 
 First it matches an opening parenthesis. Then it matches any number of
 substrings which can either be a sequence of non-parentheses, or a recursive
@@ -3071,7 +3061,8 @@ to avoid backtracking into sequences of non-parentheses.
 If this were part of a larger pattern, you would not want to recurse the entire
 pattern, so instead you could use this:
 
-  ( \e( ( [^()]++ | (?1) )* \e) )
+```text
+( \e( ( [^()]++ | (?1) )* \e) )
 
 We have put the pattern into parentheses, and caused the recursion to refer to
 them instead of the whole pattern.
@@ -3087,7 +3078,8 @@ duplicate capture group numbers
 are in use, relative references refer to the earliest group with the
 appropriate number. Consider, for example:
 
-  (?|(a)|(b)) (c) (?-2)
+```text
+(?|(a)|(b)) (c) (?-2)
 
 The first two capture groups (a) and (b) are both numbered 1, and group (c)
 is number 2. When the reference (?-2) is encountered, the second most recently
@@ -3106,7 +3098,8 @@ An alternative approach is to use named parentheses. The Perl syntax for this
 is (?&name); PCRE1's earlier syntax (?P&gt;name) is also supported. We could
 rewrite the above example as follows:
 
-  (?&lt;pn&gt; \e( ( [^()]++ | (?&pn) )* \e) )
+```text
+(?&lt;pn&gt; \e( ( [^()]++ | (?&pn) )* \e) )
 
 If there is more than one group with the same name, the earliest one is
 used.
@@ -3116,7 +3109,8 @@ repeats, and so the use of a possessive quantifier for matching strings of
 non-parentheses is important when applying the pattern to strings that do not
 match. For example, when this pattern is applied to
 
-  (aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa()
+```text
+(aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa()
 
 it yields "no match" quickly. However, if a possessive quantifier is not used,
 the match runs for a very long time indeed because there are so many different
@@ -3126,10 +3120,11 @@ before failure can be reported.
 At the end of a match, the values of capturing parentheses are those from
 the outermost level. If you want to obtain intermediate values, a callout
 function can be used (see below and the
-**pcre2callout**
+`pcre2callout`
 documentation). If the pattern above is matched against
 
-  (ab(cd)ef)
+```text
+(ab(cd)ef)
 
 the value for the inner capturing parentheses (numbered 2) is "ef", which is
 the last value taken on at the top level. If a capture group is not matched at
@@ -3141,7 +3136,8 @@ Consider this pattern, which matches text in angle brackets, allowing for
 arbitrary nesting. Only digits are allowed in nested brackets (that is, when
 recursing), whereas any characters are permitted at the outer level.
 
-  &lt; (?: (?(R) \ed++  | [^&lt;&gt;]*+) | (?R)) * &gt;
+```text
+&lt; (?: (?(R) \ed++  | [^&lt;&gt;]*+) | (?R)) * &gt;
 
 In this pattern, (?(R) is the start of a conditional group, with two different
 alternatives for the recursive and non-recursive cases. The (?R) item is the
@@ -3149,7 +3145,7 @@ actual recursive call.
 
 <a name="differences-in-recursion-processing-between-pcre2-and-perl"></a>
 
-### Differences in recursion processing between PCRE2 and Perl
+_Differences in recursion processing between PCRE2 and Perl_
 
 
 Some former differences between PCRE2 and Perl no longer exist.
@@ -3169,7 +3165,8 @@ enclose it in an atomic group.
 Supporting backtracking into recursions simplifies certain types of recursive
 pattern. For example, this pattern matches palindromic strings:
 
-  ^((.)(?1)\e2|.?)$
+```text
+^((.)(?1)\e2|.?)$
 
 The second branch in the group matches a single central character in the
 palindrome when there are an odd number of characters, or nothing when there
@@ -3178,7 +3175,8 @@ the second case when the rest of the pattern match fails. If you want to match
 typical palindromic phrases, the pattern has to ignore all non-word characters,
 which can be done like this:
 
-  ^\eW*+((.)\eW*+(?1)\eW*+\e2|\eW*+.?)\eW*+$
+```text
+^\eW*+((.)\eW*+(?1)\eW*+\e2|\eW*+.?)\eW*+$
 
 If run with the PCRE2_CASELESS option, this pattern matches phrases such as "A
 man, a plan, a canal: Panama!". Note the use of the possessive quantifier *+ to
@@ -3192,7 +3190,8 @@ group was called recursively or as a subroutine (see the next section), it
 had no access to any values that were captured outside the recursion, whereas
 in PCRE2 these values can be referenced. Consider this pattern:
 
-  ^(.)(\e1|a(?2))
+```text
+^(.)(\e1|a(?2))
 
 This pattern matches "bab". The first capturing parentheses match "b", then in
 the second group, when the backreference \e1 fails to match "b", the second
@@ -3202,7 +3201,7 @@ later versions (I tried 5.024) it now works.
 
 <a name="groups-as-subroutines"></a>
 
-# Groups as Subroutines
+## Groups as Subroutines
 
 
 If the syntax for a recursive group call (either by number or by name) is used
@@ -3212,18 +3211,21 @@ as an independent subpattern which it tries to match at the current matching
 position. The called group may be defined before or after the reference. A
 numbered reference can be absolute or relative, as in these examples:
 
-  (...(absolute)...)...(?2)...
-  (...(relative)...)...(?-1)...
-  (...(?+1)...(relative)...
-
+```text
+(...(absolute)...)...(?2)...
+(...(relative)...)...(?-1)...
+(...(?+1)...(relative)...
+```
 An earlier example pointed out that the pattern
 
-  (sens|respons)e and \e1ibility
+```text
+(sens|respons)e and \e1ibility
 
 matches "sense and sensibility" and "response and responsibility", but not
 "sense and responsibility". If instead the pattern
 
-  (sens|respons)e and (?1)ibility
+```text
+(sens|respons)e and (?1)ibility
 
 is used, it does match "sense and responsibility" as well as the other two
 strings. Another example is given in the discussion of DEFINE above.
@@ -3237,7 +3239,8 @@ Processing options such as case-independence are fixed when a group is
 defined, so if it is used as a subroutine, such options cannot be changed for
 different calls. For example, consider this pattern:
 
-  (abc)(?i:(?-1))
+```text
+(abc)(?i:(?-1))
 
 It matches "abcabc". It does not match "abcABC" because the change of
 processing option does not affect the called group.
@@ -3250,7 +3253,7 @@ below.
 
 <a name="oniguruma-subroutine-syntax"></a>
 
-# Oniguruma Subroutine Syntax
+## Oniguruma Subroutine Syntax
 
 
 For compatibility with Oniguruma, the non-Perl syntax \eg followed by a name or
@@ -3258,20 +3261,22 @@ a number enclosed either in angle brackets or single quotes, is an alternative
 syntax for calling a group as a subroutine, possibly recursively. Here are two
 of the examples used above, rewritten using this syntax:
 
-  (?&lt;pn&gt; \e( ( (?&gt;[^()]+) | \eg&lt;pn&gt; )* \e) )
-  (sens|respons)e and \eg'1'ibility
-
+```text
+(?&lt;pn&gt; \e( ( (?&gt;[^()]+) | \eg&lt;pn&gt; )* \e) )
+(sens|respons)e and \eg'1'ibility
+```
 PCRE2 supports an extension to Oniguruma: if a number is preceded by a
 plus or a minus sign it is taken as a relative reference. For example:
 
-  (abc)(?i:\eg&lt;-1&gt;)
+```text
+(abc)(?i:\eg&lt;-1&gt;)
 
 Note that \eg{...} (Perl syntax) and \eg&lt;...&gt; (Oniguruma syntax) are _not_
 synonymous. The former is a backreference; the latter is a subroutine call.
 
 <a name="callouts"></a>
 
-# Callouts
+## Callouts
 
 
 Perl has a feature whereby using the sequence (?{...}) causes arbitrary Perl
@@ -3282,8 +3287,8 @@ same pair of parentheses when there is a repetition.
 PCRE2 provides a similar feature, but of course it cannot obey arbitrary Perl
 code. The feature is called "callout". The caller of PCRE2 provides an external
 function by putting its entry point in a match context using the function
-**pcre2\_set\_callout()**, and then passing that context to **pcre2\_match()**
-or **pcre2\_dfa\_match()**. If no match context is passed, or if the callout
+`pcre2\_set\_callout()`, and then passing that context to `pcre2\_match()`
+or `pcre2\_dfa\_match()`. If no match context is passed, or if the callout
 entry point is set to NULL, callout points will be passed over silently during
 matching. To disallow callouts in the pattern syntax, you may use the
 PCRE2_EXTRA_NEVER_CALLOUT option.
@@ -3307,35 +3312,37 @@ one side-effect is that sometimes callouts are skipped. If you need all
 possible callouts to happen, you need to set options that disable the relevant
 optimizations. More details, including a complete description of the
 programming interface to the callout function, are given in the
-**pcre2callout**
+`pcre2callout`
 documentation.
 
 <a name="callouts-with-numerical-arguments"></a>
 
-### Callouts with numerical arguments
+_Callouts with numerical arguments_
 
 
 If you just want to have a means of identifying different callout points, put a
 number less than 256 after the letter C. For example, this pattern has two
 callout points:
 
-  (?C1)abc(?C2)def
+```text
+(?C1)abc(?C2)def
 
-If the PCRE2_AUTO_CALLOUT flag is passed to **pcre2\_compile()**, numerical
+If the PCRE2_AUTO_CALLOUT flag is passed to `pcre2\_compile()`, numerical
 callouts are automatically installed before each item in the pattern. They are
 all numbered 255. If there is a conditional group in the pattern whose
 condition is an assertion, an additional callout is inserted just before the
 condition. An explicit callout may also be set at this position, as in this
 example:
 
-  (?(?C9)(?=a)abc|def)
+```text
+(?(?C9)(?=a)abc|def)
 
 Note that this applies only to assertion conditions, not to other types of
 condition.
 
 <a name="callouts-with-string-arguments"></a>
 
-### Callouts with string arguments
+_Callouts with string arguments_
 
 
 A delimited string may be used instead of a number as a callout argument. The
@@ -3344,13 +3351,14 @@ the same as the start, except for {, where the ending delimiter is }. If the
 ending delimiter is needed within the string, it must be doubled. For
 example:
 
-  (?C'ab ''c'' d')xyz(?C{any text})pqr
+```text
+(?C'ab ''c'' d')xyz(?C{any text})pqr
 
 The doubling is removed before the string is passed to the callout function.
 
 <a name="backtracking-control"></a>
 
-# Backtracking Control
+## Backtracking Control
 
 
 There are a number of special "Backtracking Control Verbs" (to use Perl's
@@ -3399,7 +3407,7 @@ capture groups called as subroutines
 
 <a name="optimizations-that-affect-backtracking-verbs"></a>
 
-### Optimizations that affect backtracking verbs
+_Optimizations that affect backtracking verbs_
 
 
 PCRE2 contains some optimizations that are used to speed up matching by running
@@ -3408,12 +3416,12 @@ minimum length of matching subject, or that a particular character must be
 present. When one of these optimizations bypasses the running of a match, any
 included backtracking verbs will not, of course, be processed. You can suppress
 the start-of-match optimizations by setting the PCRE2_NO_START_OPTIMIZE option
-when calling **pcre2\_compile()**, by calling **pcre2\_set\_optimize()** with a
+when calling `pcre2\_compile()`, by calling `pcre2\_set\_optimize()` with a
 PCRE_START_OPTIMIZE_OFF directive, or by starting the pattern with (*NO_START_OPT).
 There is more discussion of this option in the section entitled
 "Compiling a pattern"
 in the
-**pcre2api**
+`pcre2api`
 documentation.
 
 Experiments with Perl suggest that it too has similar optimizations, and like
@@ -3421,7 +3429,7 @@ PCRE2, turning them off can change the result of a match.
 
 <a name="verbs-that-act-immediately"></a>
 
-### Verbs that act immediately
+_Verbs that act immediately_
 
 
 The following verbs act as soon as they are encountered.
@@ -3437,7 +3445,8 @@ assertion succeeds; in a negative assertion, the assertion fails.
 If (*ACCEPT) is inside capturing parentheses, the data so far is captured. For
 example:
 
-  A((?:A|B(*ACCEPT)|C)D)
+```text
+A((?:A|B(*ACCEPT)|C)D)
 
 This matches "AB", "AAD", or "ACD"; when it matches "AB", "B" is captured by
 the outer parentheses.
@@ -3446,7 +3455,8 @@ the outer parentheses.
 because an ungreedy quantification with a minimum of zero acts only when a
 backtrack happens. Consider, for example,
 
-  (A(*ACCEPT)??B)C
+```text
+(A(*ACCEPT)??B)C
 
 where A, B, and C may be complex expressions. After matching "A", the matcher
 processes "BC"; if that fails, causing a backtrack, (*ACCEPT) is triggered and
@@ -3454,10 +3464,11 @@ the match succeeds. In both cases, all but C is captured. Whereas (*COMMIT)
 (see below) means "fail on backtrack", a repeated (*ACCEPT) of this type means
 "succeed on backtrack".
 
-**Warning:** (*ACCEPT) should not be used within a script run group, because
+`Warning:` (*ACCEPT) should not be used within a script run group, because
 it causes an immediate exit from the group, bypassing the script run checking.
 
-  (*FAIL) or (*FAIL:NAME)
+```text
+(*FAIL) or (*FAIL:NAME)
 
 This verb causes a matching failure, forcing backtracking to occur. It may be
 abbreviated to (*F). It is equivalent to (?!) but easier to read. The Perl
@@ -3465,7 +3476,8 @@ documentation notes that it is probably useful only when combined with (?{}) or
 (??{}). Those are, of course, Perl features that are not present in PCRE2. The
 nearest equivalent is the callout feature, as for example in this pattern:
 
-  a+(?C)(*FAIL)
+```text
+a+(?C)(*FAIL)
 
 A match with the string "aaaa" always fails, but the callout is taken before
 each backtrack happens (in this example, 10 times).
@@ -3476,14 +3488,15 @@ the verb acts.
 
 <a name="recording-which-path-was-taken"></a>
 
-### Recording which path was taken
+_Recording which path was taken_
 
 
 There is one verb whose main purpose is to track how a match was arrived at,
 though it also has a secondary use in conjunction with advancing the match
 starting point (see (*SKIP) below).
 
-  (*MARK:NAME) or (*:NAME)
+```text
+(*MARK:NAME) or (*:NAME)
 
 A name is always required with this verb. For all the other backtracking
 control verbs, a NAME argument is optional.
@@ -3492,7 +3505,7 @@ When a match succeeds, the name of the last-encountered mark name on the
 matching path is passed back to the caller as described in the section entitled
 "Other information about the match"
 in the
-**pcre2api**
+`pcre2api`
 documentation. This applies to all instances of (*MARK) and other verbs,
 including those inside assertions and atomic groups. However, there are
 differences in those cases when (*MARK) is used in conjunction with (*SKIP) as
@@ -3500,17 +3513,17 @@ described below.
 
 The mark name that was last encountered on the matching path is passed back. A
 verb without a NAME argument is ignored for this purpose. Here is an example of
-**pcre2test** output, where the "mark" modifier requests the retrieval and
+`pcre2test` output, where the "mark" modifier requests the retrieval and
 outputting of (*MARK) data:
 
     re&gt; /X(*MARK:A)Y|X(*MARK:B)Z/mark
-  data&gt; XY
+data&gt; XY
    0: XY
-  MK: A
-  XZ
+MK: A
+XZ
    0: XZ
-  MK: B
-
+MK: B
+```
 The (*MARK) name is tagged with "MK:" in this output, and in this example it
 indicates which of the two alternatives matched. This is a more efficient way
 of obtaining this information than putting each alternative in its own
@@ -3524,9 +3537,9 @@ After a partial match or a failed match, the last encountered name in the
 entire match process is returned. For example:
 
     re&gt; /X(*MARK:A)Y|X(*MARK:B)Z/mark
-  data&gt; XP
-  No match, mark = B
-
+data&gt; XP
+No match, mark = B
+```
 Note that in this unanchored example the mark is retained from the match
 attempt that started at the letter "X" in the subject. Subsequent match
 attempts starting at "P" and then with an empty string do not get as far as the
@@ -3534,13 +3547,13 @@ attempts starting at "P" and then with an empty string do not get as far as the
 
 If you are interested in (*MARK) values after failed matches, you should
 probably either set the PCRE2_NO_START_OPTIMIZE option or call
-**pcre2\_set\_optimize()** with a PCRE2_START_OPTIMIZE_OFF directive
+`pcre2\_set\_optimize()` with a PCRE2_START_OPTIMIZE_OFF directive
 (see above)
 to ensure that the match is always attempted.
 
 <a name="verbs-that-act-after-backtracking"></a>
 
-### Verbs that act after backtracking
+_Verbs that act after backtracking_
 
 
 The following verbs do nothing when they are encountered. Matching continues
@@ -3557,16 +3570,18 @@ reaches them. The behaviour described below is what happens when the verb is
 not in a subroutine or an assertion. Subsequent sections cover these special
 cases.
 
-  (*COMMIT) or (*COMMIT:NAME)
+```text
+(*COMMIT) or (*COMMIT:NAME)
 
 This verb causes the whole match to fail outright if there is a later matching
 failure that causes backtracking to reach it. Even if the pattern is
 unanchored, no further attempts to find a match by advancing the starting point
 take place. If (*COMMIT) is the only backtracking verb that is encountered,
-once it has been passed **pcre2\_match()** is committed to finding a match at
+once it has been passed `pcre2\_match()` is committed to finding a match at
 the current starting point, or not at all. For example:
 
-  a+(*COMMIT)b
+```text
+a+(*COMMIT)b
 
 This matches "xxaab" but not "aacaab". It can be thought of as a kind of
 dynamic anchor, or "I've started, so I must finish."
@@ -3582,16 +3597,16 @@ match does not always guarantee that a match must be at this starting point.
 
 Note that (*COMMIT) at the start of a pattern is not the same as an anchor,
 unless PCRE2's start-of-match optimizations are turned off, as shown in this
-output from **pcre2test**:
+output from `pcre2test`:
 
     re&gt; /(*COMMIT)abc/
-  data&gt; xyzabc
+data&gt; xyzabc
    0: abc
-  data&gt;
-  re&gt; /(*COMMIT)abc/no_start_optimize
-  data&gt; xyzabc
-  No match
-
+data&gt;
+re&gt; /(*COMMIT)abc/no_start_optimize
+data&gt; xyzabc
+No match
+```
 For the first pattern, PCRE2 knows that any match must start with "a", so the
 optimization skips along the subject to "a" before applying the pattern to the
 first set of data. The match attempt then succeeds. The second pattern disables
@@ -3599,7 +3614,8 @@ the optimization that skips along to the first character. The pattern is now
 applied starting at "x", and so the (*COMMIT) causes the match to fail without
 trying any other starting points.
 
-  (*PRUNE) or (*PRUNE:NAME)
+```text
+(*PRUNE) or (*PRUNE:NAME)
 
 This verb causes the match to fail at the current starting position in the
 subject if there is a later matching failure that causes backtracking to reach
@@ -3617,7 +3633,8 @@ like (*MARK:NAME) in that the name is remembered for passing back to the
 caller. However, (*SKIP:NAME) searches only for names set with (*MARK),
 ignoring those set by other backtracking verbs.
 
-  (*SKIP)
+```text
+(*SKIP)
 
 This verb, when given without a name, is like (*PRUNE), except that if the
 pattern is unanchored, the "bumpalong" advance is not to the next character,
@@ -3625,7 +3642,8 @@ but to the position in the subject where (*SKIP) was encountered. (*SKIP)
 signifies that whatever text was matched leading up to it cannot be part of a
 successful match if there is a later mismatch. Consider:
 
-  a+(*SKIP)b
+```text
+a+(*SKIP)b
 
 If the subject is "aaaac...", after the first match attempt fails (starting at
 the first character in the string), the starting point skips on to start the
@@ -3639,7 +3657,8 @@ starting position of the current match, or (by being inside a lookbehind)
 earlier, the position specified by (*SKIP) is ignored, and instead the normal
 "bumpalong" occurs.
 
-  (*SKIP:NAME)
+```text
+(*SKIP:NAME)
 
 When (*SKIP) has an associated name, its behaviour is modified. When such a
 (*SKIP) is triggered, the previous path through the pattern is searched for the
@@ -3651,15 +3670,15 @@ the (*SKIP) is ignored.
 The search for a (*MARK) name uses the normal backtracking mechanism, which
 means that it does not see (*MARK) settings that are inside atomic groups or
 assertions, because they are never re-entered by backtracking. Compare the
-following **pcre2test** examples:
+following `pcre2test` examples:
 
     re&gt; /a(?&gt;(*MARK:X))(*SKIP:X)(*F)|(.)/
-  data: abc
+data: abc
    0: a
    1: a
-  data:
+data:
     re&gt; /a(?:(*MARK:X))(*SKIP:X)(*F)|(.)/
-  data: abc
+data: abc
    0: b
    1: b
 
@@ -3675,14 +3694,16 @@ the second branch of the pattern.
 Note that (*SKIP:NAME) searches only for names set by (*MARK:NAME). It ignores
 names that are set by other backtracking verbs.
 
-  (*THEN) or (*THEN:NAME)
+```text
+(*THEN) or (*THEN:NAME)
 
 This verb causes a skip to the next innermost alternative when backtracking
 reaches it. That is, it cancels any further backtracking within the current
 alternative. Its name comes from the observation that it can be used for a
 pattern-based if-then-else block:
 
-  ( COND1 (*THEN) FOO | COND2 (*THEN) BAR | COND3 (*THEN) BAZ ) ...
+```text
+( COND1 (*THEN) FOO | COND2 (*THEN) BAR | COND3 (*THEN) BAZ ) ...
 
 If the COND1 pattern matches, FOO is tried (and possibly further items after
 the end of the group if FOO succeeds); on failure, the matcher skips to the
@@ -3702,14 +3723,16 @@ effect of (*THEN) extends beyond such a group to the enclosing alternative.
 Consider this pattern, where A, B, etc. are complex pattern fragments that do
 not contain any | characters at this level:
 
-  A (B(*THEN)C) | D
+```text
+A (B(*THEN)C) | D
 
 If A and B are matched, but there is a failure in C, matching does not
 backtrack into A; instead it moves to the next alternative, that is, D.
 However, if the group containing (*THEN) is given an alternative, it
 behaves differently:
 
-  A (B(*THEN)C | (*FAIL)) | D
+```text
+A (B(*THEN)C | (*FAIL)) | D
 
 The effect of (*THEN) is now confined to the inner group. After a failure in C,
 matching moves to (*FAIL), which causes the whole group to fail because there
@@ -3719,7 +3742,8 @@ Note that a conditional group is not considered as having two alternatives,
 because only one is ever used. In other words, the | character in a conditional
 group has a different meaning. Ignoring white space, consider:
 
-  ^.*? (?(?=a) a | b(*THEN)c )
+```text
+^.*? (?(?=a) a | b(*THEN)c )
 
 If the subject is "ba", this pattern does not match. Because .*? is ungreedy,
 it initially matches zero characters. The condition (?=a) then fails, the
@@ -3739,14 +3763,15 @@ fail.
 
 <a name="more-than-one-backtracking-verb"></a>
 
-### More than one backtracking verb
+_More than one backtracking verb_
 
 
 If more than one backtracking verb is present in a pattern, the one that is
 backtracked onto first acts. For example, consider this pattern, where A, B,
 etc. are complex pattern fragments:
 
-  (A(*COMMIT)B(*THEN)C|ABD)
+```text
+(A(*COMMIT)B(*THEN)C|ABD)
 
 If A matches but B fails, the backtrack to (*COMMIT) causes the entire match to
 fail. However, if A and B match, but C fails, the backtrack to (*THEN) causes
@@ -3755,7 +3780,8 @@ not always the same as Perl's. It means that if two or more backtracking verbs
 appear in succession, all but the last of them has no effect. Consider this
 example:
 
-  ...(*COMMIT)(*PRUNE)...
+```text
+...(*COMMIT)(*PRUNE)...
 
 If there is a matching failure to the right, backtracking onto (*PRUNE) causes
 it to be triggered, and its action is taken. There can never be a backtrack
@@ -3763,13 +3789,14 @@ onto (*COMMIT).
 
 <a name="backtracking-verbs-in-repeated-groups"></a>
 
-### Backtracking verbs in repeated groups
+_Backtracking verbs in repeated groups_
 
 
 PCRE2 sometimes differs from Perl in its handling of backtracking verbs in
 repeated groups. For example, consider:
 
-  /(a(*COMMIT)b)+ac/
+```text
+/(a(*COMMIT)b)+ac/
 
 If the subject is "abac", Perl matches unless its optimizations are disabled,
 but PCRE2 always fails because the (*COMMIT) in the second repeat of the group
@@ -3777,7 +3804,7 @@ acts.
 
 <a name="backtracking-verbs-in-assertions"></a>
 
-### Backtracking verbs in assertions
+_Backtracking verbs in assertions_
 
 
 (*FAIL) in any assertion has its normal effect: it forces an immediate
@@ -3826,7 +3853,7 @@ the assertion to be true, without considering any further alternative branches.
 
 <a name="backtracking-verbs-in-subroutines"></a>
 
-### Backtracking verbs in subroutines
+_Backtracking verbs in subroutines_
 
 
 These behaviours occur whether or not the group is called recursively.
@@ -3850,15 +3877,15 @@ there is a backtrack at the outer level.
 
 <a name="see-also"></a>
 
-# See Also
+## See Also
 
 
-**pcre2api**(3), **pcre2callout**(3), **pcre2matching**(3),
-**pcre2syntax**(3), **pcre2**(3).
+`pcre2api`(3), `pcre2callout`(3), `pcre2matching`(3),
+`pcre2syntax`(3), `pcre2`(3).
 
 <a name="author"></a>
 
-# Author
+## Author
 
 
     Philip Hazel
@@ -3867,7 +3894,7 @@ there is a backtrack at the outer level.
 
 <a name="revision"></a>
 
-# Revision
+## Revision
 
 
     Last updated: 21 September 2024
